@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NewPayroll from './pages/payroll/NewPayroll';
+import SheetDemo from './pages/payroll/sheet_demo';
 
 function App() {
 
@@ -9,7 +10,8 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="payroll" element={<NewPayroll />} />
+          <Route path="/" element={<SheetDemo />} />
+          <Route path="/p" element={<NewPayroll />} />
         </Routes>
       </BrowserRouter>
     </div>
