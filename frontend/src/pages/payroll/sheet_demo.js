@@ -3,7 +3,10 @@ import { Spreadsheet } from "react-spreadsheet";
 import React, { useEffect, useState } from 'react';
 
 import ensureRoomToGrow from "./utils/ensureRoomToGrow";
+import ExpParser from "./utils/ExpParser";
 
+const emVar = "e";
+const tableVar = "t";
 const dataUserField = ["id", "name", "age", "born"];
 
 const dataUser = [
@@ -21,11 +24,6 @@ const SheetDemo = () => {
         [{ value: "null" }, { value: "null" }],
         [{ value: null }]
     ]);
-    /*
-        At start:
-        - get dataUser, dataUserField from API ave 10/20/30 user
-        - set dataInSheet have 2 column : id and name
-        */
 
     const parseDataInSheetCal = () => {
         let data = [];
@@ -78,17 +76,62 @@ const SheetDemo = () => {
 
     const onCellCommit = (prev, next, coords) => {
         // setData(ensureRoomToGrow(data));
+        // try {
         let row = coords["row"];
         let col = coords["column"];
         let nextValue = next["value"];
         console.log('onCellCommit', { prev, nextValue }, { row, col });
         if (coords.row === 1 && coords.column >= 2) {
             console.log("dddaaa", dataCal);
-            updateDataCalOneValue(col, nextValue);
+            updateDataCal(col, nextValue);
+
             renderDataCal();
         }
-        // console.log(dataInSheetAll);
+        // } catch (error) {
+
+        // }
     };
+
+    const updateDataCal = (col, value) => {
+        const exp = ExpParser(value);
+        console.log("exp", exp);
+        let formatString = {}
+        if (Array.isArray(exp))
+            for (let i = 0; i < exp.length; i++) {
+                const element = exp[i].split(".");
+                if (element[0] === emVar) {
+                    formatString[exp[i]] = dataUserField.indexOf(element[1])
+                }
+                else if (element[0] === tableVar) {
+                    formatString[exp[i]] = element[1];
+                }
+            }
+        console.log("formatString", formatString)
+
+        console.log("before", dataCal);
+        if (typeof dataCal === "undefined") return;
+        for (let i = 0; i < dataCal.length; i++) {
+            if (typeof dataCal[i] === "undefined") return;
+            while (dataCal[i].length <= col) {
+                dataCal[i] = dataCal[i].concat([0]);
+            }
+
+            let newValue = value;
+            if (Array.isArray(exp))
+                for (let j = 0; j < exp.length; j++) {
+                    const element = exp[j].split(".");
+                    if (element[0] === emVar) {
+                        newValue = newValue.replace(exp[j], dataUser[i][parseInt(formatString[exp[j]])].toString());
+                    }
+                    else if (element[0] === tableVar) {
+                        newValue = newValue.replace(exp[j], formatString[exp[j]] + (i + 4).toString())
+                    }
+                }
+            dataCal[i][col] = newValue[0] === "="? newValue: "=" + newValue;
+        }
+        console.log("after", dataCal);
+    }
+
 
     const onChange = (data) => {
         // setData(ensureRoomToGrow(data));
