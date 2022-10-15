@@ -38,22 +38,20 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      // positionId: {
-      //   type: Sequelize.DataTypes.INTEGER,
-      //   References: {
-      //     tableName: "Position",
-      //     schema: "schema",
-      //   },
-      //   key: id,
-      // },
-      // supervisionId:{
-      //   type: Sequelize.DataTypes.INTEGER,
-      //   References: {
-      //     tableName: "Employees",
-      //     schema: "schema",
-      //   },
-      //   key: id,
-      // }
+      positionId: {
+        type: Sequelize.DataTypes.INTEGER,
+        references: {
+          model: "Positions",
+          key: "id"
+        }
+      },
+      supervisionId:{
+        type: Sequelize.DataTypes.INTEGER,
+        references: {
+          model: "Employees",
+          key: "id"
+        }
+      }
     });
   },
   async down(queryInterface, Sequelize) {
