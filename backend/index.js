@@ -1,8 +1,12 @@
 // Require express and create an instance of it
 var express = require('express');
+const connectDB = require('./config/connectDB')
+
 require('dotenv').config();
 
 var app = express();
+
+connectDB()
 
 // on the request to root (localhost:3000/)
 app.get('/', function (req, res) {
