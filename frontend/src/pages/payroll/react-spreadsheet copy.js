@@ -8,9 +8,8 @@ const TextEdit = ({ getValue, cell, onChange }) => (
   <Input
     onChange={e => {
       onChange({ ...cell, value: e.target.value });
-      console.log({e})
     }}
-    // value={() => getValue({ data: cell }) || ""}
+    value={() => getValue({ data: cell }) || ""}
     autoFocus
   />
 );

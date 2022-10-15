@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Spreadsheet } from "react-spreadsheet";
 import React, { useEffect, useState } from 'react';
 import _, { set } from "lodash";
+import { Select, Input, Button, Checkbox } from "antd";
 
 import ensureRoomToGrow from "./utils/ensureRoomToGrow";
 import ExpParser from "./utils/ExpParser";
@@ -26,7 +27,6 @@ const ReactSpreadsheetDemo = () => {
     [{ value: null, readOnly: true }, { value: null, readOnly: true }]
   ]);
 
-  const [quan, setQuan] = useState(false);
 
   const parseDataInSheetCal = (dataCal) => {
     let data = [];
@@ -40,17 +40,20 @@ const ReactSpreadsheetDemo = () => {
     }
     return data;
   };
-  const updateDataInSheetAll = () => {
-    let data = dataInSheetAll.slice(0, 3).concat(dataInSheetCal);
-    setDataInSheetAll(ensureRoomToGrow(data));
-  };
-  const renderDataCal = () => {
-    parseDataInSheetCal();
-    updateDataInSheetAll();
-  };
+  const TextEdit = ({ getValue, cell, onChange }) => (
+    <Input
+      onChange={e => {
+        onChange({ ...cell, value: "e.target.value" });
+        console.log({ cell })
+      }}
+      // value={() => getValue({ data: cell })}
+      autoFocus
+    />
+  );
+
   const addEmptyColumn = (data) => {
     let dataCp = data;
-    dataCp = dataCp.map(e => e.concat([{ value: "haha" }]))
+    dataCp = dataCp.map(e => e.concat([{ value: "haha", DataEditor: TextEdit }]))
     return dataCp;
   }
   useEffect(() => {
@@ -72,22 +75,9 @@ const ReactSpreadsheetDemo = () => {
     setDataInSheetAll(dataInit);
   }, []);
 
-  function updateDataCalOneValue(col, addData) {
-    console.log("before", dataCal);
-    if (typeof dataCal === "undefined") return;
-    for (let i = 0; i < dataCal.length; i++) {
-      if (typeof dataCal[i] === "undefined") return;
-      while (dataCal[i].length <= col) {
-        dataCal[i] = dataCal[i].concat([0]);
-      }
-      dataCal[i][col] = addData;
-    }
-    console.log("after", dataCal);
-  }
 
   const onCellCommit = (prev, next, coords) => {
-    setQuan(!quan)
-    console.log({quan})
+    
     if (coords === null || !coords.hasOwnProperty('row') || !coords.hasOwnProperty('column'))
       return;
     let row = parseInt(coords["row"]);
@@ -96,7 +86,7 @@ const ReactSpreadsheetDemo = () => {
     console.log('onCellCommit', { prev, nextValue }, { row, col });
 
     // For sure data not update (state and viewer) if user input wrong cell
-    
+
     // if (row >= 2) {
     //   let dataCp = _.cloneDeep(dataInSheetAll);
     //   setDataInSheetAll(dataCp);
@@ -120,45 +110,6 @@ const ReactSpreadsheetDemo = () => {
     // }
   };
 
-  const updateDataCal = (col, value) => {
-    const exp = ExpParser(value);
-    console.log("exp", exp);
-    let formatString = {}
-    if (Array.isArray(exp))
-      for (let i = 0; i < exp.length; i++) {
-        const element = exp[i].split(".");
-        if (element[0] === emVar) {
-          formatString[exp[i]] = dataUserField.indexOf(element[1])
-        }
-        else if (element[0] === tableVar) {
-          formatString[exp[i]] = element[1];
-        }
-      }
-    console.log("formatString", formatString)
-
-    console.log("before", dataCal);
-    if (typeof dataCal === "undefined") return;
-    for (let i = 0; i < dataCal.length; i++) {
-      if (typeof dataCal[i] === "undefined") return;
-      while (dataCal[i].length <= col) {
-        dataCal[i] = dataCal[i].concat([0]);
-      }
-
-      let newValue = value;
-      if (Array.isArray(exp))
-        for (let j = 0; j < exp.length; j++) {
-          const element = exp[j].split(".");
-          if (element[0] === emVar) {
-            newValue = newValue.replace(exp[j], dataUser[i][parseInt(formatString[exp[j]])].toString());
-          }
-          else if (element[0] === tableVar) {
-            newValue = newValue.replace(exp[j], formatString[exp[j]] + (i + 4).toString())
-          }
-        }
-      dataCal[i][col] = newValue[0] === "=" ? newValue : "=" + newValue;
-    }
-    console.log("after", dataCal);
-  }
 
   const onChange = (data) => {
     // setData(ensureRoomToGrow(data));
@@ -168,19 +119,19 @@ const ReactSpreadsheetDemo = () => {
 
   const onSelect = (selected) => {
     console.log("onSelect", selected);
-};
-const onActivate = (active) => {
+  };
+  const onActivate = (active) => {
     console.log("onActivate", active);
-};
-const onBlur = () => {
+  };
+  const onBlur = () => {
     console.log("onBlur");
-};
-const onKeyDown = (event) => {
+  };
+  const onKeyDown = (event) => {
     console.log("onKeyDown", event);
-};
-const onModeChange = (mode) => {
+  };
+  const onModeChange = (mode) => {
     console.log("onModeChange", mode);
-};
+  };
 
 
 
@@ -190,15 +141,15 @@ const onModeChange = (mode) => {
         data={dataInSheetAll}
         onChange={onChange}
 
-        onCellCommit={onCellCommit}
+        // onCellCommit={onCellCommit}
         // onCellCommit
         // rowLabels={["Description", "Fomular"]}
         hideRowIndicators={true}
-      onSelect={onSelect}
-      onActivate={onActivate}
-      onBlur={onBlur}
-      onKeyDown={onKeyDown}
-      onModeChange={onModeChange}
+        onSelect={onSelect}
+        onActivate={onActivate}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        onModeChange={onModeChange}
       // getBindingsForCell
       />
 

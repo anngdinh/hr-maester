@@ -49,21 +49,21 @@ const SheetDemo = () => {
         parseDataInSheetCal();
         updateDataInSheetAll();
     };
-    // useEffect(() => {
-    //     function initDataCal() {
-    //         let data = [];
-    //         for (let i = 0; i < dataUser.length; i++) {
-    //             let row = [dataUser[i][0], dataUser[i][1]];
-    //             data = data.concat([row]);
-    //         }
-    //         dataCal = data;
-    //     }
+    useEffect(() => {
+        function initDataCal() {
+            let data = [];
+            for (let i = 0; i < dataUser.length; i++) {
+                let row = [dataUser[i][0], dataUser[i][1]];
+                data = data.concat([row]);
+            }
+            dataCal = data;
+        }
 
-    //     initDataCal();
-    //     console.log("dataCal: ", dataCal);
+        initDataCal();
+        console.log("dataCal: ", dataCal);
 
-    //     renderDataCal();
-    // }, []);
+        renderDataCal();
+    }, []);
 
     function updateDataCalOneValue(col, addData) {
         console.log("before", dataCal);
@@ -170,7 +170,7 @@ const SheetDemo = () => {
 
     return (
         <>
-            {/* <Spreadsheet
+            <Spreadsheet
                 data={dataInSheetAll}
                 onChange={onChange}
                 
@@ -185,11 +185,11 @@ const SheetDemo = () => {
             />
 
             <h2>Raw Data</h2>
-            <pre>{JSON.stringify(dataInSheetAll, null, "  ")}</pre> */}
+            <pre>{JSON.stringify(dataInSheetAll, null, "  ")}</pre>
 
             {/* <SpreadsheetExample></SpreadsheetExample> */}
-            <InlineSheet></InlineSheet>
-            <DataDemo></DataDemo>
+            {/* <InlineSheet></InlineSheet> */}
+            {/* <DataDemo></DataDemo> */}
 
             {/* <ReactSpreadsheetDemo></ReactSpreadsheetDemo> */}
         </>
