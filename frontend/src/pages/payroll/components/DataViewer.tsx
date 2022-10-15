@@ -1,6 +1,5 @@
 import React from "react";
 import { ComponentType, ReactNode as Node } from "react";
-import { Parser as FormulaParser } from "hot-formula-parser";
 
 type Cell = {
   component?: ComponentType<{
@@ -31,20 +30,3 @@ const DataViewer = ({ getValue, cell, column, row, formulaParser }) => {
 
 export default DataViewer;
 
-export function createDataViewer(customFormulaParser: FormulaParser) {
-  return ({
-    getValue,
-    cell,
-    column,
-    row,
-    formulaParser: defaultFormulaParser
-  }) => {
-    const formulaParser = customFormulaParser || defaultFormulaParser;
-    const rawValue = getValue({ data: cell, column, row });
-    if (typeof rawValue === "string" && rawValue.startsWith("=")) {
-      const { result, error } = formulaParser.parse(rawValue.slice(1));
-      return error || toView(result);
-    }
-    return toView(rawValue);
-  };
-}

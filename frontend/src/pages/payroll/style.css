@@ -1,0 +1,22 @@
+.App {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .formula-editor-container {
+    margin-bottom: 10px;
+    display: flex;
+  }
+  .formula-editor {
+    display: block;
+    width: 100%;
+    padding: 3px;
+    border-radius: 2px;
+    box-shadow: none;
+    border: 1px solid #ddd;
+    font-size: 16px;
+  }
+  

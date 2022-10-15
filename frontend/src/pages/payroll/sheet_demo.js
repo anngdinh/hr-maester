@@ -4,6 +4,10 @@ import React, { useEffect, useState } from 'react';
 
 import ensureRoomToGrow from "./utils/ensureRoomToGrow";
 import ExpParser from "./utils/ExpParser";
+import SpreadsheetExample from "./react-spreadsheet";
+import InlineSheet from "./react-spreadsheet copy";
+import ReactSpreadsheetDemo from "./react-spreadsheet copy 3";
+import DataDemo from "./react-spreadsheet copy 2";
 
 const emVar = "e";
 const tableVar = "t";
@@ -30,7 +34,7 @@ const SheetDemo = () => {
         for (let i = 0; i < dataCal.length; i++) {
             let row = [];
             for (let j = 0; j < dataCal[i].length; j++) {
-                let cel = [{ value: dataCal[i][j] }];
+                let cel = [{ value: dataCal[i][j], readOnly: true, className: "e.age/e.born" }];
                 row = row.concat(cel);
             }
             data = data.concat([row]);
@@ -45,21 +49,21 @@ const SheetDemo = () => {
         parseDataInSheetCal();
         updateDataInSheetAll();
     };
-    useEffect(() => {
-        function initDataCal() {
-            let data = [];
-            for (let i = 0; i < dataUser.length; i++) {
-                let row = [dataUser[i][0], dataUser[i][1]];
-                data = data.concat([row]);
-            }
-            dataCal = data;
-        }
+    // useEffect(() => {
+    //     function initDataCal() {
+    //         let data = [];
+    //         for (let i = 0; i < dataUser.length; i++) {
+    //             let row = [dataUser[i][0], dataUser[i][1]];
+    //             data = data.concat([row]);
+    //         }
+    //         dataCal = data;
+    //     }
 
-        initDataCal();
-        console.log("dataCal: ", dataCal);
+    //     initDataCal();
+    //     console.log("dataCal: ", dataCal);
 
-        renderDataCal();
-    }, []);
+    //     renderDataCal();
+    // }, []);
 
     function updateDataCalOneValue(col, addData) {
         console.log("before", dataCal);
@@ -77,10 +81,11 @@ const SheetDemo = () => {
     const onCellCommit = (prev, next, coords) => {
         // setData(ensureRoomToGrow(data));
         // try {
-        let row = coords["row"];
-        let col = coords["column"];
+        let row = coords["row"]|| -1;
+        let col = coords["column"]|| -1;
         let nextValue = next["value"];
         console.log('onCellCommit', { prev, nextValue }, { row, col });
+        console.log('onCellCommit', { prev, next, coords });
         if (coords.row === 1 && coords.column >= 2) {
             console.log("dddaaa", dataCal);
             updateDataCal(col, nextValue);
@@ -127,7 +132,7 @@ const SheetDemo = () => {
                         newValue = newValue.replace(exp[j], formatString[exp[j]] + (i + 4).toString())
                     }
                 }
-            dataCal[i][col] = newValue[0] === "="? newValue: "=" + newValue;
+            dataCal[i][col] = newValue[0] === "=" ? newValue : "=" + newValue;
         }
         console.log("after", dataCal);
     }
@@ -135,20 +140,58 @@ const SheetDemo = () => {
 
     const onChange = (data) => {
         // setData(ensureRoomToGrow(data));
+        console.log("onChange", data);
         setDataInSheetAll(data);
     };
+    const onSelect = (selected) => {
+        console.log("onSelect", selected);
+    };
+    const onActivate = (active) => {
+        console.log("onActivate", active);
+    };
+    const onBlur = () => {
+        console.log("onBlur");
+    };
+    const onKeyDown = (event) => {
+        console.log("onKeyDown", event);
+    };
+    const onModeChange = (mode) => {
+        console.log("onModeChange", mode);
+    };
+
+    const RangeView = ({ cell }) => (
+        <input
+            type="text"
+            value={cell}
+            disabled
+            style={{ pointerEvents: "none" }}
+        />
+    );
 
     return (
         <>
-            <Spreadsheet
+            {/* <Spreadsheet
                 data={dataInSheetAll}
                 onChange={onChange}
+                
                 onCellCommit={onCellCommit}
                 rowLabels={["Description", "Fomular"]}
+                onSelect={onSelect}
+                onActivate={onActivate}
+                onBlur={onBlur}
+                onKeyDown={onKeyDown}
+                onModeChange={onModeChange}
+                // getBindingsForCell
             />
 
             <h2>Raw Data</h2>
-            <pre>{JSON.stringify(dataInSheetAll, null, "  ")}</pre>
+            <pre>{JSON.stringify(dataInSheetAll, null, "  ")}</pre> */}
+
+            {/* <SpreadsheetExample></SpreadsheetExample> */}
+            <InlineSheet></InlineSheet>
+            <DataDemo></DataDemo>
+
+            {/* <ReactSpreadsheetDemo></ReactSpreadsheetDemo> */}
         </>
     );
 };
@@ -156,3 +199,5 @@ const SheetDemo = () => {
 
 
 export default SheetDemo;
+
+// e.age/e.born
