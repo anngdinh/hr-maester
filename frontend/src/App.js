@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import NewPayroll from './pages/payroll/NewPayroll';
+import NewPayroll from './pages/payroll/Payroll';
 
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="payroll" element={<NewPayroll />} />
+          <Route path="/" element={<NewPayroll />} />
         </Routes>
       </BrowserRouter>
     </div>
