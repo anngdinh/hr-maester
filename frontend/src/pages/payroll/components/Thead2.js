@@ -1,5 +1,6 @@
-// import { Form } from 'react-bootstrap';
 import _ from 'lodash';
+
+import { Icon, Label, Menu, Table, Input } from 'semantic-ui-react'
 
 import { Parser as FormulaParser } from "hot-formula-parser";
 import ExpParser from '../utils/ExpParser';
@@ -8,7 +9,7 @@ const emVar = "e";
 const tableVar = "t";
 const indexHolder = "random_string_for_replace";
 
-export default function Thead({ dataUser, formularArr, setFormularArr, dataArr, setDataArr }) {
+export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr, setDataArr, descriptionArr, setDescriptionArr }) {
     let _dataArr = _.cloneDeep(dataArr);
     let _formularArr = _.cloneDeep(formularArr);
     const formulaParser = new FormulaParser();
@@ -23,14 +24,6 @@ export default function Thead({ dataUser, formularArr, setFormularArr, dataArr, 
         console.log({ _dataArr })
         return _dataArr[x][params[1]];
     });
-    // formulaParser.on('callFunction', function (name, params, done) {
-    //     if (name === 'GET_TABLE') {
-    //         let x = ColumnIndex(params[0]);
-    //         // console.log(x);
-    //         console.log({ _dataArr })
-    //         done(_dataArr[x][params[1]]);
-    //     }
-    // });
 
     const ColumnIndex = (col) => {
         let x = col.charCodeAt(0)
@@ -38,29 +31,42 @@ export default function Thead({ dataUser, formularArr, setFormularArr, dataArr, 
         return x - 65;
     }
 
-    return <thead>
-        <tr>
-            <th colSpan={2}>
-                <div>
-                    Description
-                </div>
+    return <Table.Header>
+        <Table.Row>
+            <Table.HeaderCell colSpan={2}>
+                Description
+            </Table.HeaderCell>
+            {descriptionArr?.map((value, index) => {
+                return (
+                    <Table.HeaderCell key={index}>
+                        <Input
+                            fluid
+                            type="text"
+                            defaultValue={value}
+                            placeholder="Description..."
+                            onChange={(e) => {
+                                let value = e.target.value;
+                                let _descriptionArr = _.cloneDeep(descriptionArr)
+                                _descriptionArr[index] = value;
+                                setDescriptionArr(_descriptionArr);
+                            }}
+                        />
+                    </Table.HeaderCell>
+                )
+            })}
+        </Table.Row>
+        <Table.Row>
+            <Table.HeaderCell colSpan={2}>
                 <div>
                     Formular
                 </div>
-            </th>
+            </Table.HeaderCell>
             {formularArr?.map((value, index) => {
                 return (
-                    <th key={index}>
-                        <Form.Control
+                    <Table.HeaderCell key={index}>
+                        <Input
+                            fluid
                             type="text"
-                            // name={props.name}
-                            // defaultValue={value}
-                            placeholder="Description..."
-                        />
-                        <br />
-                        <Form.Control
-                            type="text"
-                            // name={props.name}
                             defaultValue={value}
                             placeholder="Formular..."
                             onChange={(e) => {
@@ -107,9 +113,9 @@ export default function Thead({ dataUser, formularArr, setFormularArr, dataArr, 
                                 setDataArr(_dataArr);
                             }}
                         />
-                    </th>
+                    </Table.HeaderCell>
                 )
             })}
-        </tr>
-    </thead>;
+        </Table.Row>
+    </Table.Header>;
 }

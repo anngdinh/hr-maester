@@ -1,20 +1,20 @@
 import styled from "styled-components";
 import { useState } from 'react';
-import { Table, Button } from 'react-bootstrap';
-import Thead from "./components/Thead";
-import Tbody from "./components/Tbody";
 
 import _ from 'lodash';
 
+import { Icon, Label, Menu, Table, Button } from 'semantic-ui-react'
+import Thead2 from "./components/Thead2";
+import Tbody2 from "./components/Tbody2";
 
-
-const NewPayroll = () => {
+export default function NewPayroll() {
 
     const dataUser = [
         { id: "E1", name: "Annn", age: 21, born: 2001 },
         { id: "E2", name: "Quan", age: 22, born: 2000 }
     ];
     const [formularArr, setFormularArr] = useState(['e.age', 'e.born', 't.A', 't.A * t.B '])
+    const [descriptionArr, setDescriptionArr] = useState(['a', 'b', 'c', 'd'])
 
     const numUser = dataUser.length;
     const numFormular = 4;
@@ -32,12 +32,16 @@ const NewPayroll = () => {
         return extractUserRow;
     }
     const NewColumn = () => {
+        let _descriptionArr = _.cloneDeep(descriptionArr)
+        _descriptionArr.push("")
+
         let _formularArr = _.cloneDeep(formularArr);
         _formularArr.push("")
 
         let _dataArr = _.cloneDeep(dataArr);
         _dataArr.push(new Array(numUser).fill(0))
 
+        setDescriptionArr(_descriptionArr);
         setFormularArr(_formularArr);
         setDataArr(_dataArr);
     }
@@ -45,7 +49,7 @@ const NewPayroll = () => {
 
     return (
         <>
-            <Table striped bordered hover>
+            {/* <Table striped bordered hover>
                 <Thead
                     dataUser={dataUser}
                     formularArr={formularArr}
@@ -55,15 +59,30 @@ const NewPayroll = () => {
                 >
                 </Thead>
                 <Tbody extractUserRow={ExtractUserRow()} dataArr={dataArr}></Tbody>
+            </Table> */}
+            <Button variant="primary" onClick={() => NewColumn()}>
+                <Icon name='add' />
+                New column
+            </Button>
+            <Table celled>
+                <Thead2
+                    dataUser={dataUser}
+                    formularArr={formularArr}
+                    setFormularArr={setFormularArr}
+                    dataArr={dataArr}
+                    setDataArr={setDataArr}
+                    descriptionArr={descriptionArr}
+                    setDescriptionArr={setDescriptionArr}>
+                </Thead2>
+                <Tbody2
+                    extractUserRow={ExtractUserRow()}
+                    dataArr={dataArr}>
+                </Tbody2>
             </Table>
-            <Button variant="primary" onClick={() => NewColumn()}>+ New column</Button>{' '}
+
+            {/* <Test></Test> */}
+            {/* <Dashboard></Dashboard> */}
         </>
     );
 };
-
-
-
-
-
-export default NewPayroll;
 
