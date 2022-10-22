@@ -1,0 +1,21 @@
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-font-smoothing: grayscale;
+}
+
+#sidebar {
+    padding-left: 20px;
+}
+
+#sidebar .header {
+    /* color: red; */
+    font-size: 20px;
+    font-weight: 400;
+}
+
+#sidebar .item {
+    /* color: blue; */
+    /* font-weight: 400; */
+    font-size: 16px;
+    padding: 10px 0;
+}

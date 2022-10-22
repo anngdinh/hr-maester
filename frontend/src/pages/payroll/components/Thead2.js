@@ -8,6 +8,7 @@ import ExpParser from '../utils/ExpParser';
 const emVar = "e";
 const tableVar = "t";
 const indexHolder = "random_string_for_replace";
+const valueError = ['#ERROR!', '#DIV/0!', '#NAME?', '#N/A', '#NUM!', '#VALUE!']
 
 export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr, setDataArr, descriptionArr, setDescriptionArr }) {
     let _dataArr = _.cloneDeep(dataArr);
@@ -69,6 +70,7 @@ export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr,
                             type="text"
                             defaultValue={value}
                             placeholder="Formular..."
+                            error={valueError.reduce((previousValue, currentValue) => previousValue || dataArr[index].includes(currentValue), false)}
                             onChange={(e) => {
                                 let value = e.target.value;
                                 _formularArr = _.cloneDeep(formularArr)

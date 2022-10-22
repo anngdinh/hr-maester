@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Icon, Label, Menu, Table } from 'semantic-ui-react'
 
+const valueError = ['#ERROR!', '#DIV/0!', '#NAME?', '#N/A', '#NUM!', '#VALUE!']
 export default function Tbody2({ extractUserRow, dataArr }) {
-    const valueError = ['#ERROR!', '#DIV/0!', '#NAME?', '#N/A', '#NUM!', '#VALUE!']
     // console.log({ extractUserRow })
     return <Table.Body>
         <Table.Row active>

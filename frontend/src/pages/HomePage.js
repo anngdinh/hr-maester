@@ -25,7 +25,7 @@ export default function HomePage() {
 
   return (
     <div className="App">
-      {/* <MyHeader></MyHeader> */}
+      <MyHeader></MyHeader>
 
       <Grid padded>
         <Grid.Column
@@ -34,8 +34,22 @@ export default function HomePage() {
           only="tablet computer"
           id="sidebar"
         >
-          <Menu vertical borderless fluid text>
-            <Menu.Item>Dashboard</Menu.Item>
+          <Menu vertical borderless fluid text id="sidebar">
+            <Menu.Item>
+              <Menu.Header>GENERAL</Menu.Header>
+              <Menu.Menu>
+                <Menu.Item
+                >
+                  <Icon name='dashboard' />
+                  Dashboard
+                </Menu.Item>
+                <Menu.Item
+                >
+                  <Icon name='setting' />
+                  Setting
+                </Menu.Item>
+              </Menu.Menu>
+            </Menu.Item>
             <Menu.Item>
               <Menu.Header>PAYROLL</Menu.Header>
               <Menu.Menu>
@@ -43,7 +57,7 @@ export default function HomePage() {
                   name="payroll"
                   active={page === 'payroll'}
                   onClick={handleItemClick}>
-                  <Icon name='folder' />
+                  <Icon name='file outline' />
                   New Payroll
                 </Menu.Item>
                 <Menu.Item
@@ -51,6 +65,7 @@ export default function HomePage() {
                   active={page === 'bb'}
                   onClick={handleItemClick}
                   as="a">
+                  <Icon name='list' />
                   All Payroll
                 </Menu.Item>
               </Menu.Menu>

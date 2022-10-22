@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import _ from 'lodash';
 
-import { Icon, Label, Menu, Table, Button } from 'semantic-ui-react'
+import { Icon, Label, Menu, Table, Button, Header, Step, Container } from 'semantic-ui-react'
 import Thead2 from "./components/Thead2";
 import Tbody2 from "./components/Tbody2";
 
@@ -60,6 +60,41 @@ export default function NewPayroll() {
                 </Thead>
                 <Tbody extractUserRow={ExtractUserRow()} dataArr={dataArr}></Tbody>
             </Table> */}
+
+            <Header as='h2'>
+                <Icon name='settings' />
+                <Header.Content>
+                    Account Settings
+                    <Header.Subheader>Manage your preferences</Header.Subheader>
+                </Header.Content>
+            </Header>
+            <Container>
+                <Step.Group>
+                    <Step>
+                        <Icon name='truck' />
+                        <Step.Content>
+                            <Step.Title>Query Builder</Step.Title>
+                            <Step.Description>Create a query for applicable employees</Step.Description>
+                        </Step.Content>
+                    </Step>
+
+                    <Step active>
+                        <Icon name='payment' />
+                        <Step.Content>
+                            <Step.Title>Calculation formula</Step.Title>
+                            <Step.Description>Use the information of each employee to calculate</Step.Description>
+                        </Step.Content>
+                    </Step>
+
+                    <Step disabled>
+                        <Icon name='info' />
+                        <Step.Content>
+                            <Step.Title>Confirm Order</Step.Title>
+                        </Step.Content>
+                    </Step>
+                </Step.Group>
+            </Container>
+
             <Button variant="primary" onClick={() => NewColumn()}>
                 <Icon name='add' />
                 New column
