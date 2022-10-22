@@ -6,14 +6,15 @@ import _ from 'lodash';
 import { Icon, Label, Menu, Table, Button, Header, Step, Container } from 'semantic-ui-react'
 import Thead2 from "./components/Thead2";
 import Tbody2 from "./components/Tbody2";
+import Thead3 from "./components/Thead3_HyperFomular";
 
 export default function NewPayroll() {
 
     const dataUser = [
         { id: "E1", name: "Annn", age: 21, born: 2001 },
-        { id: "E2", name: "Quan", age: 22, born: 2000 }
+        { id: "E2", name: "Quan", age: 100, born: 1922 }
     ];
-    const [formularArr, setFormularArr] = useState(['e.age', 'e.born', 't.A', 't.A * t.B '])
+    const [formularArr, setFormularArr] = useState(['=e.age', '=e.born', '=IF(t.A > 22, 100, 299)', '=t.A * t.C '])
     const [descriptionArr, setDescriptionArr] = useState(['a', 'b', 'c', 'd'])
 
     const numUser = dataUser.length;
@@ -21,7 +22,7 @@ export default function NewPayroll() {
 
 
     // const dataRender = new Array(numFormular).fill(0).map(() => new Array(numUser).fill(0));
-    const [dataArr, setDataArr] = useState(new Array(numFormular).fill(0).map(() => new Array(numUser).fill(0)))
+    const [dataArr, setDataArr] = useState(new Array(numUser).fill(0).map(() => new Array(numFormular).fill(0)))
 
 
     const ExtractUserRow = () => {
@@ -39,7 +40,7 @@ export default function NewPayroll() {
         _formularArr.push("")
 
         let _dataArr = _.cloneDeep(dataArr);
-        _dataArr.push(new Array(numUser).fill(0))
+        _dataArr.map((e) => e.push(0))
 
         setDescriptionArr(_descriptionArr);
         setFormularArr(_formularArr);
@@ -49,18 +50,6 @@ export default function NewPayroll() {
 
     return (
         <>
-            {/* <Table striped bordered hover>
-                <Thead
-                    dataUser={dataUser}
-                    formularArr={formularArr}
-                    setFormularArr={setFormularArr}
-                    dataArr={dataArr}
-                    setDataArr={setDataArr}
-                >
-                </Thead>
-                <Tbody extractUserRow={ExtractUserRow()} dataArr={dataArr}></Tbody>
-            </Table> */}
-
             <Header as='h2'>
                 <Icon name='settings' />
                 <Header.Content>

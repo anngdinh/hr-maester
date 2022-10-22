@@ -32,7 +32,6 @@ export default function HomePage() {
           tablet={3}
           computer={3}
           only="tablet computer"
-          id="sidebar"
         >
           <Menu vertical borderless fluid text id="sidebar">
             <Menu.Item>
