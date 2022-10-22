@@ -2,16 +2,24 @@
 var express = require('express');
 const connectDB = require('./config/connectDB')
 
+const authRouter = require('./routes/auth');
+
 require('dotenv').config();
 
 var app = express();
 
 connectDB()
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+
 // on the request to root (localhost:3000/)
 app.get('/', function (req, res) {
     res.send('<b>My</b> first express http server');
 });
+
+app.use('/api/auth', authRouter);
 
 // On localhost:3000/welcome
 app.get('/welcome', function (req, res) {
