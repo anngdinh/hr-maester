@@ -7,7 +7,6 @@ const { registerValidator } = require('./../validations/auth');
 const verifyToken = require('./../middleware/verifyToken');
 
 router.post('/register', async (request, response) => {
-    console.log(request.body)
     const { error } = registerValidator(request.body);
 
     if (error) return response.status(422).send(error.details[0].message);
@@ -38,6 +37,7 @@ router.post('/register', async (request, response) => {
 
 router.post('/login', async (request, response) => {
     const user = await User.findOne({ where: { email: request.body.email } });
+    
     console.log(user)
 
     if (!user) return response.status(422).send({ message: 'Email or Password is not correct' });
