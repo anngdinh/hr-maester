@@ -1,38 +1,43 @@
 import _ from 'lodash';
 
-import { Icon, Label, Menu, Table, Input } from 'semantic-ui-react'
+import { Table, Input } from 'semantic-ui-react'
 
-import { Parser as FormulaParser } from "hot-formula-parser";
+import { HyperFormula } from 'hyperformula';
 import ExpParser from '../utils/ExpParser';
 
 
 import { valueError, emVar, tableVar, indexHolder, employeeTableName, tableTableName, getDataColumn } from "../utils/Constant";
 
 
-export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr, setDataArr, descriptionArr, setDescriptionArr }) {
+export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr, setDataArr, descriptionArr, setDescriptionArr }) {
     let _dataArr = _.cloneDeep(dataArr);
     let _formularArr = _.cloneDeep(formularArr);
 
-    const formulaParser = new FormulaParser();
-    formulaParser.setFunction(employeeTableName, function (params) { // index i, j
-        let x = params[0];
-        // console.log(x)
-        return dataUser[params[1]][x];
-    });
-    formulaParser.setFunction(tableTableName, function (params) { // index i, j
-        let x = ColumnIndex(params[0]);
-        // console.log(x);
-        // console.log({ _dataArr })
-        return _dataArr[params[1]][x];
-    });
 
-    const ColumnIndex = (col) => {
-        let x = col.charCodeAt(0)
-        // console.log(x);
-        return x - 65;
+    const dataUserField = Object.keys(dataUser[0]);
+
+    const UserFieldToChar = (userField) => {
+        let j = dataUserField.indexOf(userField)
+        return String.fromCharCode(j + 65)
     }
 
-    const HotFormularParserVersion = (e, index) => {
+    const DataUserObjectToDataUserArr = () => {
+        return dataUser.map((e) => {
+            return dataUserField.map((field) => e[field])
+        })
+    };
+    const dataUserArr = DataUserObjectToDataUserArr();
+
+    // initiate the engine with no data
+    const hfInstance = HyperFormula.buildEmpty({ licenseKey: 'gpl-v3' });
+
+    const employeeSheetId = hfInstance.getSheetId(hfInstance.addSheet(employeeTableName));
+    hfInstance.setSheetContent(employeeSheetId, dataUserArr);
+
+    const tableSheetId = hfInstance.getSheetId(hfInstance.addSheet(tableTableName));
+    hfInstance.setSheetContent(tableSheetId, dataArr);
+
+    const HyperFormulaVersion = (e, index) => {
         let value = e.target.value;
         _formularArr = _.cloneDeep(formularArr)
         _formularArr[index] = value;
@@ -42,14 +47,13 @@ export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr,
         // console.log({ formularExtract })
 
         _dataArr = _.cloneDeep(dataArr)
-        // _dataArr[index] = _dataArr[index].map(e => value)
 
         var parserString = _formularArr.map((e, i) => {
             let parseElement = formularExtract[i]?.map((e) => {
                 const element = e.split('.');
                 // console.log({element})
-                if (e[0] === emVar) return employeeTableName + '("' + element[1] + '", ' + indexHolder + ")";
-                else if (e[0] === tableVar) return tableTableName + '("' + element[1] + '", ' + indexHolder + ")";
+                if (e[0] === emVar) return employeeTableName + '!' + UserFieldToChar(element[1]) + indexHolder;
+                else if (e[0] === tableVar) return tableTableName + '!' + element[1] + indexHolder;
             })
             let f = e;
 
@@ -59,21 +63,35 @@ export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr,
             return f;
         })
 
-        // console.log({ parserString })
 
         for (let i = 0; i < _dataArr.length; i++) {
             for (let j = 0; j < _dataArr[i].length; j++) {
-                let x = parserString[j].replaceAll(indexHolder, i)
-                let y = formulaParser.parse(x.slice(1)); // remove letter '='
-                // console.log(parserString[i])
-                // console.log({ x, y })
-                _dataArr[i][j] = y.result !== null ? y.result : y.error;
-                // setDataArr(_dataArr)
+                let x = parserString[j].replaceAll(indexHolder, i + 1)
+                _dataArr[i][j] = x;
             }
         }
+        hfInstance.setSheetContent(tableSheetId, _dataArr);
+        const sheetValue = hfInstance.getSheetValues(tableSheetId)
 
-        setDataArr(_dataArr);
+        console.log({ _dataArr, sheetValue })
+
+        let checkError = sheetValue.map((e) => {
+            return e.map((value) => {
+                if (typeof value === 'object' &&
+                    value !== null &&
+                    !Array.isArray(value))
+                    return value.value;
+                return value;
+            })
+        })
+        console.log({ _formularArr, checkError })
+
+        setDataArr(checkError);
     }
+
+    // function getDataColumn(dataArr, index) {
+    //     return dataArr.map((e) => e[index])
+    // }
 
     return <Table.Header>
         <Table.Row>
@@ -114,7 +132,8 @@ export default function Thead2({ dataUser, formularArr, setFormularArr, dataArr,
                             defaultValue={value}
                             placeholder="Formular..."
                             error={valueError.reduce((previousValue, currentValue) => previousValue || getDataColumn(dataArr, index).includes(currentValue), false)}
-                            onChange={(e) => HotFormularParserVersion(e, index)}
+                            // onChange={(e) => HotFormularParserVersion(e, index)}
+                            onChange={(e) => HyperFormulaVersion(e, index)}
                         />
                     </Table.HeaderCell>
                 )
