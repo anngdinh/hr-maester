@@ -38,7 +38,7 @@ export default function MyHeader() {
                 <Menu.Item header as="a">
                     <Header as='h2'>
                         {/* <Icon name='settings' /> */}
-                        <Image src='https://i.ibb.co/5FQ8nMM/hr-maester-logo.png' size='massive' />
+                        <Image src='https://i.ibb.co/0GnsyBW/hr-maester2.png' size='massive' />
                         <Header.Content>
                             <BigTitle>
                                 HR MAESTER
