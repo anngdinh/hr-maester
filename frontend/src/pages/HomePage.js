@@ -15,7 +15,7 @@ import {
 } from "semantic-ui-react";
 
 import MyHeader from "./components/MyHeader";
-import NewPayroll from './payroll/Payroll'
+import NewPayroll from './payroll/NewPayroll'
 
 export default function HomePage() {
 

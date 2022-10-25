@@ -3,10 +3,13 @@ import { useState } from 'react';
 
 import _ from 'lodash';
 
-import { Icon, Label, Menu, Table, Button, Header, Step, Container } from 'semantic-ui-react'
+import { Icon, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown } from 'semantic-ui-react'
 import Thead2 from "./components/Thead2";
 import Tbody2 from "./components/Tbody2";
 import Thead3 from "./components/Thead3_HyperFomular";
+import Variable from "./components/Variable";
+import RuleDependency from "./components/RuleDependency";
+import CreateGroupRule from "./components/CreateGroupRule";
 
 export default function NewPayroll() {
 
@@ -50,7 +53,31 @@ export default function NewPayroll() {
 
     return (
         <>
-            <Header as='h2'>
+            <Form>
+                <Form.Field>
+                    <label>Payroll</label>
+                    <input placeholder='Name' />
+                </Form.Field>
+                <Form.Field>
+                    <label>Description</label>
+                    <input placeholder='Description' />
+                </Form.Field>
+                <Form.Field>
+                    <label>Group Payroll</label>
+                    <Dropdown
+                        placeholder='Select Payroll'
+                        // fluid
+                        multiple
+                        search
+                        selection
+                        // options={stateOptions}
+                        // onChange={(e, data) => setPayrollValue(data.value)}
+                    />
+                </Form.Field>
+                <Button primary type='submit'>Save</Button>
+            </Form>
+
+            {/* <Header as='h2'>
                 <Icon name='settings' />
                 <Header.Content>
                     Account Settings
@@ -89,7 +116,7 @@ export default function NewPayroll() {
                 New column
             </Button>
             <Table celled>
-                <Thead2
+                <Thead3
                     dataUser={dataUser}
                     formularArr={formularArr}
                     setFormularArr={setFormularArr}
@@ -97,15 +124,18 @@ export default function NewPayroll() {
                     setDataArr={setDataArr}
                     descriptionArr={descriptionArr}
                     setDescriptionArr={setDescriptionArr}>
-                </Thead2>
+                </Thead3>
                 <Tbody2
                     extractUserRow={ExtractUserRow()}
                     dataArr={dataArr}>
                 </Tbody2>
-            </Table>
+            </Table> */}
 
             {/* <Test></Test> */}
             {/* <Dashboard></Dashboard> */}
+            {/* <Variable></Variable>
+            <RuleDependency></RuleDependency> */}
+            {/* <CreateGroupRule></CreateGroupRule> */}
         </>
     );
 };

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Table, Input } from 'semantic-ui-react'
+import { Table, Input, Dropdown } from 'semantic-ui-react'
 
 import { HyperFormula } from 'hyperformula';
 import ExpParser from '../utils/ExpParser';
@@ -8,6 +8,10 @@ import ExpParser from '../utils/ExpParser';
 
 import { valueError, emVar, tableVar, indexHolder, employeeTableName, tableTableName, getDataColumn } from "../utils/Constant";
 
+const optionsTypeInput = [
+    { key: 'formular', text: 'F', value: 'formular' },
+    { key: 'digit', text: 'D', value: 'digit' },
+]
 
 export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr, setDataArr, descriptionArr, setDescriptionArr }) {
     let _dataArr = _.cloneDeep(dataArr);
@@ -102,6 +106,8 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
                 return (
                     <Table.HeaderCell key={index}>
                         <Input
+                            label={<Dropdown defaultValue='formular' options={optionsTypeInput} />}
+                            labelPosition='left'
                             fluid
                             type="text"
                             defaultValue={value}
