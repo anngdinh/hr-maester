@@ -106,8 +106,8 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
                 return (
                     <Table.HeaderCell key={index}>
                         <Input
-                            label={<Dropdown defaultValue='formular' options={optionsTypeInput} />}
-                            labelPosition='left'
+                            // label={<Dropdown defaultValue='formular' options={optionsTypeInput} />}
+                            // labelPosition='left'
                             fluid
                             type="text"
                             defaultValue={value}

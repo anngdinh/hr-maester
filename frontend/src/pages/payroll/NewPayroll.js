@@ -1,32 +1,46 @@
 import styled from "styled-components";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import _ from 'lodash';
 
-import { Icon, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown } from 'semantic-ui-react'
+import { Icon, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment } from 'semantic-ui-react'
 import Thead2 from "./components/Thead2";
 import Tbody2 from "./components/Tbody2";
 import Thead3 from "./components/Thead3_HyperFomular";
 import Variable from "./components/Variable";
 import RuleDependency from "./components/RuleDependency";
 import CreateGroupRule from "./components/CreateGroupRule";
+import VariableModal from "./components/VariableModal";
+import RuleDependencyModal from "./components/RuleDependencyModal";
+import { __dataUser, __descriptionInit, __formularInit } from "../data/PayrollData";
+
+const resultColumnOptions = [
+    { key: 'A', text: 'A', value: 'A', },
+    { key: 'B', text: 'B', value: 'B', },
+    { key: 'C', text: 'C', value: 'C', },
+    { key: 'D', text: 'D', value: 'D', },
+    { key: 'E', text: 'E', value: 'E', },
+]
+
+const payrollRule = ['Total income', 'Dependent person', 'Basic salary', 'BHYT', 'Bonus money', 'Tax'];
+const stateOptions = payrollRule.map((value, index) => ({
+    key: value,
+    text: value,
+    value: index,
+}));
 
 export default function NewPayroll() {
+    const [dataUser, setDataUser] = useState([{}])
+    const [formularArr, setFormularArr] = useState([])
+    const [descriptionArr, setDescriptionArr] = useState([])
+    const [dataArr, setDataArr] = useState([])
 
-    const dataUser = [
-        { id: "E1", name: "Annn", age: 21, born: 2001 },
-        { id: "E2", name: "Quan", age: 100, born: 1922 }
-    ];
-    const [formularArr, setFormularArr] = useState(['=e.age', '=e.born', '=IF(t.A > 22, 100, 299)', '=t.A * t.C '])
-    const [descriptionArr, setDescriptionArr] = useState(['a', 'b', 'c', 'd'])
-
-    const numUser = dataUser.length;
-    const numFormular = 4;
-
-
-    // const dataRender = new Array(numFormular).fill(0).map(() => new Array(numUser).fill(0));
-    const [dataArr, setDataArr] = useState(new Array(numUser).fill(0).map(() => new Array(numFormular).fill(0)))
-
+    useEffect(() => {
+        setDataUser(__dataUser);
+        setFormularArr(__formularInit)
+        setDescriptionArr(__descriptionInit)
+        setDataArr(new Array(__dataUser.length).fill(0).map(() => new Array(__formularInit.length).fill(0)))
+    }, [])
 
     const ExtractUserRow = () => {
         const extractUserRow = dataUser.map(e => {
@@ -50,71 +64,107 @@ export default function NewPayroll() {
         setDataArr(_dataArr);
     }
 
+    const getOptions = (number, prefix) =>
+        _.times(number, (index) => ({
+            key: index,
+            text: `${prefix}${index * 10 + 10}`,
+            value: index,
+        }))
 
     return (
         <>
-            <Form>
-                <Form.Field>
-                    <label>Payroll</label>
-                    <input placeholder='Name' />
-                </Form.Field>
-                <Form.Field>
-                    <label>Description</label>
-                    <input placeholder='Description' />
-                </Form.Field>
-                <Form.Field>
-                    <label>Group Payroll</label>
-                    <Dropdown
-                        placeholder='Select Payroll'
-                        // fluid
-                        multiple
-                        search
-                        selection
-                        // options={stateOptions}
-                        // onChange={(e, data) => setPayrollValue(data.value)}
-                    />
-                </Form.Field>
-                <Button primary type='submit'>Save</Button>
-            </Form>
-
-            {/* <Header as='h2'>
-                <Icon name='settings' />
+            <Header as='h2'>
+                <Icon name='file outline' />
                 <Header.Content>
-                    Account Settings
-                    <Header.Subheader>Manage your preferences</Header.Subheader>
+                    Create new payroll
+                    {/* <Header.Subheader>Manage your preferences</Header.Subheader> */}
                 </Header.Content>
             </Header>
+
+            <Header as='h3' dividing>
+                1. Information
+            </Header>
             <Container>
-                <Step.Group>
-                    <Step>
-                        <Icon name='truck' />
-                        <Step.Content>
-                            <Step.Title>Query Builder</Step.Title>
-                            <Step.Description>Create a query for applicable employees</Step.Description>
-                        </Step.Content>
-                    </Step>
-
-                    <Step active>
-                        <Icon name='payment' />
-                        <Step.Content>
-                            <Step.Title>Calculation formula</Step.Title>
-                            <Step.Description>Use the information of each employee to calculate</Step.Description>
-                        </Step.Content>
-                    </Step>
-
-                    <Step disabled>
-                        <Icon name='info' />
-                        <Step.Content>
-                            <Step.Title>Confirm Order</Step.Title>
-                        </Step.Content>
-                    </Step>
-                </Step.Group>
+                <Form>
+                    <Form.Field>
+                        <label>Payroll</label>
+                        <input placeholder='Name' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Description</label>
+                        <input placeholder='Description' />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Group Payroll</label>
+                        <Dropdown
+                            placeholder='Group Payroll'
+                            // fluid
+                            multiple
+                            search
+                            selection
+                            options={stateOptions}
+                        // onChange={(e, data) => setPayrollValue(data.value)}
+                        />
+                    </Form.Field>
+                    {/* <Button primary type='submit'>Save</Button> */}
+                </Form>
             </Container>
 
-            <Button variant="primary" onClick={() => NewColumn()}>
-                <Icon name='add' />
-                New column
-            </Button>
+            <Header as='h3' dividing>
+                2. Payroll dependency and Variable
+            </Header>
+
+            <Container>
+
+                {/* <Button primary>Add rule Dependency</Button>
+                <Button primary>Add variable</Button>
+                <Variable></Variable>
+                <RuleDependency></RuleDependency> */}
+                <VariableModal></VariableModal>
+                <RuleDependencyModal></RuleDependencyModal>
+            </Container>
+
+            <Header as='h3' dividing>
+                3. Query builder
+            </Header>
+
+
+
+            <Header as='h3' dividing>
+                4. Additional data
+            </Header>
+            <Container>
+                <Segment placeholder>
+                    <Header icon>
+                        <Icon name='pdf file outline' />
+                        Additional data for each employee such as coefficient salary, ...
+                    </Header>
+                    <Button primary>Add Data</Button>
+                </Segment>
+            </Container>
+
+
+            <Header as='h3' dividing>
+                5. Formular table
+            </Header>
+
+            <Container textAlign='right' fluid>
+                <Container fluid>
+                    <Button positive floated="right" onClick={() => NewColumn()}>
+                        <Icon name='add' />
+                        New column
+                    </Button>
+                    Preview
+                    <Dropdown
+                        placeholder='10'
+                        compact
+                        selection
+                        options={getOptions(3, ' ')}
+                    />
+                </Container>
+            </Container>
+
+
             <Table celled>
                 <Thead3
                     dataUser={dataUser}
@@ -129,13 +179,31 @@ export default function NewPayroll() {
                     extractUserRow={ExtractUserRow()}
                     dataArr={dataArr}>
                 </Tbody2>
-            </Table> */}
+            </Table>
 
+            <Form>
+                <Form.Field inline>
+                    <label>Result Column</label>
+                    <Dropdown
+                        // placeholder='10'
+                        compact
+                        selection
+                        options={resultColumnOptions}
+                    />
+                </Form.Field>
+            </Form>
+
+            <Container textAlign="center">
+                <Button color='green' >
+                    <Icon name='checkmark' /> Create new payroll
+                </Button>
+            </Container>
             {/* <Test></Test> */}
             {/* <Dashboard></Dashboard> */}
-            {/* <Variable></Variable>
-            <RuleDependency></RuleDependency> */}
+
             {/* <CreateGroupRule></CreateGroupRule> */}
+
+
         </>
     );
 };

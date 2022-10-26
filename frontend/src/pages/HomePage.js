@@ -15,11 +15,26 @@ import {
 } from "semantic-ui-react";
 
 import MyHeader from "./components/MyHeader";
+import AllPayroll from "./payroll/AllPayroll";
+import GroupPayroll from "./payroll/GroupPayroll";
 import NewPayroll from './payroll/NewPayroll'
 
 export default function HomePage() {
+  const PageSw = {
+    dashboard: 'dashboard',
+    setting: 'setting',
 
-  const [page, setPage] = useState('payroll');
+    newPayroll: 'newPayroll',
+    allPayroll: 'allPayroll',
+    groupPayroll: 'groupPayroll',
+
+    // aaaaaaaa: 'aaaaaaaa',
+    // aaaaaaaa: 'aaaaaaaa',
+    // aaaaaaaa: 'aaaaaaaa',
+    // aaaaaaaa: 'aaaaaaaa',
+  }
+
+  const [page, setPage] = useState(PageSw.allPayroll);
 
   const handleItemClick = (e, { name }) => setPage(name)
 
@@ -39,12 +54,12 @@ export default function HomePage() {
               <Menu.Menu>
                 <Menu.Item
                 >
-                  <Icon name='dashboard' />
+                  <Icon name={PageSw.dashboard} />
                   Dashboard
                 </Menu.Item>
                 <Menu.Item
                 >
-                  <Icon name='setting' />
+                  <Icon name={PageSw.setting} />
                   Setting
                 </Menu.Item>
               </Menu.Menu>
@@ -53,19 +68,26 @@ export default function HomePage() {
               <Menu.Header>PAYROLL</Menu.Header>
               <Menu.Menu>
                 <Menu.Item
-                  name="payroll"
-                  active={page === 'payroll'}
+                  name={PageSw.newPayroll}
+                  active={page === PageSw.newPayroll}
                   onClick={handleItemClick}>
                   <Icon name='file outline' />
                   New Payroll
                 </Menu.Item>
                 <Menu.Item
-                  name='bb'
-                  active={page === 'bb'}
-                  onClick={handleItemClick}
-                  as="a">
+                  name={PageSw.allPayroll}
+                  active={page === PageSw.allPayroll}
+                  onClick={handleItemClick}>
                   <Icon name='list' />
                   All Payroll
+                </Menu.Item>
+
+                <Menu.Item
+                  name={PageSw.groupPayroll}
+                  active={page === PageSw.groupPayroll}
+                  onClick={handleItemClick}>
+                  <Icon name='tags' />
+                  Group rule
                 </Menu.Item>
               </Menu.Menu>
             </Menu.Item>
@@ -80,13 +102,17 @@ export default function HomePage() {
           floated="right"
           id="content"
         >
-          <div style={{ display: page === 'payroll' ? 'block' : 'none' }}>
+          <div style={{ display: page === PageSw.newPayroll ? 'block' : 'none' }}>
             <NewPayroll></NewPayroll>
           </div>
 
-          {/* <div style={{ display: page === 'bb' ? 'block' : 'none' }}>
-            <BB></BB>
-          </div> */}
+          <div style={{ display: page === PageSw.allPayroll ? 'block' : 'none' }}>
+            <AllPayroll></AllPayroll>
+          </div>
+
+          <div style={{ display: page === PageSw.groupPayroll ? 'block' : 'none' }}>
+            <GroupPayroll></GroupPayroll>
+          </div>
         </Grid.Column>
       </Grid>
     </div>
