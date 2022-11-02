@@ -3,6 +3,7 @@ var express = require('express');
 const connectDB = require('./config/connectDB')
 
 const authRouter = require('./routes/auth');
+const payrollRouter = require('./routes/payroll');
 
 require('dotenv').config();
 
@@ -20,6 +21,7 @@ app.get('/', function (req, res) {
 });
 
 app.use('/api/auth', authRouter);
+app.use('/api/payroll', payrollRouter);
 
 // On localhost:3000/welcome
 app.get('/welcome', function (req, res) {
