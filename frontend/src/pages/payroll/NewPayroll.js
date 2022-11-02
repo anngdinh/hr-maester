@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import _ from 'lodash';
 
-import { Icon, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment } from 'semantic-ui-react'
+import { Icon, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion } from 'semantic-ui-react'
 import Thead2 from "./components/Thead2";
 import Tbody2 from "./components/Tbody2";
 import Thead3 from "./components/Thead3_HyperFomular";
@@ -13,6 +13,7 @@ import CreateGroupRule from "./components/CreateGroupRule";
 import VariableModal from "./components/VariableModal";
 import RuleDependencyModal from "./components/RuleDependencyModal";
 import { __dataUser, __descriptionInit, __formularInit } from "../data/PayrollData";
+import MyQueryBuilder from "./components/MyQueryBuilder";
 
 const resultColumnOptions = [
     { key: 'A', text: 'A', value: 'A', },
@@ -106,7 +107,6 @@ export default function NewPayroll() {
                         // onChange={(e, data) => setPayrollValue(data.value)}
                         />
                     </Form.Field>
-                    {/* <Button primary type='submit'>Save</Button> */}
                 </Form>
             </Container>
 
@@ -128,6 +128,14 @@ export default function NewPayroll() {
                 3. Query builder
             </Header>
 
+            <Container>
+                <MyQueryBuilder></MyQueryBuilder>
+                <Button color='green' >
+                    <Icon name='checkmark' /> Check
+                </Button>
+
+                200 employees are applied !
+            </Container>
 
 
             <Header as='h3' dividing>
