@@ -1,6 +1,10 @@
 // Require express and create an instance of it
 var express = require('express');
 const connectDB = require('./config/connectDB')
+const cors = require("cors");
+
+// const swaggerUi = require('swagger-ui-express');
+// const swaggerDocument = require('./swagger.json');
 
 const authRouter = require('./routes/auth');
 const payrollRouter = require('./routes/payroll');
@@ -11,6 +15,7 @@ var app = express();
 
 connectDB()
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,6 +27,7 @@ app.get('/', function (req, res) {
 
 app.use('/api/auth', authRouter);
 app.use('/api/payroll', payrollRouter);
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // On localhost:3000/welcome
 app.get('/welcome', function (req, res) {
