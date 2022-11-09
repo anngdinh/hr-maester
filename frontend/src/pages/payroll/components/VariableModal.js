@@ -32,6 +32,8 @@ export default function VariableModal() {
 
     return <>
         <Modal
+            closeOnDimmerClick={false}
+            closeOnEscape={false}
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}
             open={open}

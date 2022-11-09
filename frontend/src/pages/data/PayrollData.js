@@ -10,9 +10,95 @@ const __descriptionInit = ['Age', 'Born year', 'If statement', 'Formular']
 
 
 const __GroupPayroll = {
-    'Total income': ['Basic salary', 'Bonus money', 'Bonus project'],
-    'Free income tax': ['Lunch allowance'],
-    'Tax deduction': ['BHYT', 'Dependent person', 'Charity'],
+    "rule": {
+        "1": {
+            "id": 1,
+            "name": "Basic salary",
+            "alias": "basic_salary",
+            "description": "Basic salary for all employee",
+            "isIncome": true
+        },
+        "2": {
+            "id": 2,
+            "name": "Lunch allowance",
+            "alias": "lunch_allowance",
+            "description": "Lunch allowance for all employee",
+            "isIncome": true
+        },
+        "3": {
+            "id": 3,
+            "name": "new",
+            "alias": "new",
+            "description": "new",
+            "isIncome": null
+        },
+        "4": {
+            "id": 4,
+            "name": "new",
+            "alias": "new",
+            "description": "new",
+            "isIncome": null
+        },
+        "6": {
+            "id": 6,
+            "name": "new",
+            "alias": "new",
+            "description": "new",
+            "isIncome": null
+        },
+        "7": {
+            "id": 7,
+            "name": "new",
+            "alias": "new",
+            "description": "new",
+            "isIncome": null
+        }
+    },
+    "belong": {
+        "1": [
+            1,
+            2,
+            3
+        ],
+        "2": [
+            1
+        ],
+        "3": [
+            1
+        ]
+    },
+    "g_rule": {
+        "1": {
+            "id": 1,
+            "name": "Total income",
+            "alias": "total_income",
+            "description": "Define total income for all employee"
+        },
+        "2": {
+            "id": 2,
+            "name": "Free income tax",
+            "alias": "free_income_tax",
+            "description": "Define Free income tax for all employee"
+        },
+        "3": {
+            "id": 3,
+            "name": "Tax deduction",
+            "alias": "tax_deduction",
+            "description": "Define Tax deduction for all employee"
+        },
+        "7": {
+            "id": 7,
+            "name": "new",
+            "alias": "new",
+            "description": "new"
+        },
+        "8": {
+            "id": 8,
+            "name": "new",
+            "alias": "new",
+            "description": "new"
+        }
+    }
 }
 
 const __AllPayroll = [

@@ -17,11 +17,12 @@ export default function RuleDependencyModal() {
 
     return <>
         <Modal
-            closeIcon
-            open={open}
-            trigger={<Button>Add rule dependency</Button>}
+            closeOnDimmerClick={false}
+            closeOnEscape={false}
             onClose={() => setOpen(false)}
             onOpen={() => setOpen(true)}
+            open={open}
+            trigger={<Button>Add rule dependency</Button>}
         >
             <Header icon='archive' content='Add rule dependency' />
             <Modal.Content>

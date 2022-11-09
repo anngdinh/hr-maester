@@ -1,14 +1,25 @@
+import axios from 'axios';
 import _, { set } from 'lodash';
 import { useState, useEffect } from 'react';
 
 import { Icon, Label, Menu, Table, Input, Button, Dropdown, Header, Container } from 'semantic-ui-react';
-import { __GroupPayroll } from '../data/PayrollData';
+import EditGroupModal from './components/EditGroupModal';
+import NewGroupModal from "./components/NewGroupModal";
 
 export default function GroupPayroll() {
-    const [groupPayroll, setGroupPayroll] = useState({})
+    const [groupPayroll, setGroupPayroll] = useState({ "rule": {}, "belong": {}, "g_rule": {} })
 
     useEffect(() => {
-        setGroupPayroll(__GroupPayroll)
+        const fetchData = async () => {
+            try {
+                const { data: response } = await axios.get('http://localhost:3001/api/payroll/groupRule/getBelongGroupRule');
+                setGroupPayroll(response);
+            } catch (error) {
+                console.error(error)
+            }
+        };
+
+        fetchData();
     }, [])
 
     return <>
@@ -21,10 +32,10 @@ export default function GroupPayroll() {
         </Header>
 
         <Container>
-            <Button positive floated="right" onClick={() => { }}>
-                <Icon name='add' />
-                New Group
-            </Button>
+            <NewGroupModal
+                rule={groupPayroll.rule}
+                setGroupPayroll={setGroupPayroll}
+            ></NewGroupModal>
         </Container>
 
         <Container>
@@ -34,6 +45,7 @@ export default function GroupPayroll() {
                         <Table.HeaderCell>No.</Table.HeaderCell>
                         <Table.HeaderCell>Group ID</Table.HeaderCell>
                         <Table.HeaderCell>Group Name</Table.HeaderCell>
+                        {/* <Table.HeaderCell>Alias</Table.HeaderCell> */}
                         <Table.HeaderCell>Description</Table.HeaderCell>
                         <Table.HeaderCell>Payrolls</Table.HeaderCell>
                         <Table.HeaderCell>Action</Table.HeaderCell>
@@ -42,24 +54,32 @@ export default function GroupPayroll() {
 
                 <Table.Body>
                     {
-                        Object.keys(groupPayroll).map((key, i) => {
+                        Object.keys(groupPayroll.g_rule).map((key, i) => {
                             return <Table.Row key={i}>
                                 <Table.Cell>{i + 1}</Table.Cell>
-                                <Table.Cell>GRP_{i + 1}</Table.Cell>
-                                <Table.Cell>{key}</Table.Cell>
-                                <Table.Cell>...</Table.Cell>
+                                <Table.Cell>GRP_{parseInt(key) + 1}</Table.Cell>
+                                <Table.Cell>{groupPayroll.g_rule[key].name}</Table.Cell>
+                                <Table.Cell>{groupPayroll.g_rule[key].description}</Table.Cell>
                                 <Table.Cell>
-                                    {groupPayroll[key].map((e, j) => {
-                                        return <Label key={j}>{e}</Label>
+                                    {groupPayroll.belong[key]?.map((e, j) => {
+                                        return <Label key={j}>{groupPayroll.rule[e].name}</Label>
                                     })}
                                 </Table.Cell>
 
                                 <Table.Cell>
-                                    <Button
-                                        basic
-                                        icon='edit'
-                                        onClick={() => { }}
-                                    />
+                                    <div>
+                                        <EditGroupModal
+                                            g_rule_id={parseInt(key)}
+                                            groupPayroll={groupPayroll}
+                                            setGroupPayroll={setGroupPayroll}
+                                        ></EditGroupModal>
+                                        <Button
+                                            basic
+                                            icon='trash'
+                                            onClick={() => { }}
+                                        />
+                                    </div>
+
                                 </Table.Cell>
                             </Table.Row>
                         }
