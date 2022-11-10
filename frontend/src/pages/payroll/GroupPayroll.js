@@ -12,7 +12,7 @@ export default function GroupPayroll() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const { data: response } = await axios.get('http://localhost:3001/api/payroll/groupRule/getBelongGroupRule');
+                const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/groupRule/getBelongGroupRule');
                 setGroupPayroll(response);
             } catch (error) {
                 console.error(error)

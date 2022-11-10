@@ -31,7 +31,7 @@ export default function EditGroupModal({ g_rule_id, groupPayroll, setGroupPayrol
         try {
             await axios
                 .post(
-                    "http://localhost:3001/api/payroll/groupRule/update",
+                    process.env.REACT_APP_BACKEND + "/api/payroll/groupRule/update",
                     newVar
                 )
                 .then((response) => {
@@ -39,7 +39,7 @@ export default function EditGroupModal({ g_rule_id, groupPayroll, setGroupPayrol
                 });
             await axios
                 .post(
-                    "http://localhost:3001/api/payroll/groupRule/updateGroupRuleHaveRule",
+                    process.env.REACT_APP_BACKEND + "/api/payroll/groupRule/updateGroupRuleHaveRule",
                     {
                         'g_rule': g_rule_id,
                         'rule': ruleBelong
@@ -48,7 +48,7 @@ export default function EditGroupModal({ g_rule_id, groupPayroll, setGroupPayrol
                 .then((response) => {
                     console.log("response: ", response.data);
                 });
-            const { data: response } = await axios.get('http://localhost:3001/api/payroll/groupRule/getBelongGroupRule');
+            const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/groupRule/getBelongGroupRule');
             setGroupPayroll(response);
         }
         catch (err) {
