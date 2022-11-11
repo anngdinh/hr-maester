@@ -3,17 +3,26 @@ import { useState } from 'react';
 
 import { Icon, Label, Menu, Table, Input, Button, Dropdown, Modal, Header } from 'semantic-ui-react';
 
-export default function RuleDependencyModal() {
+export default function RuleDependencyModal({ groupBelongOptions, setGroupBelongOptions, groupBelong, groupFetchData, ruleFetchData, ruleDepend, setRuleDepend, groupDepend, setGroupDepend }) {
     const [open, setOpen] = useState(false)
-
-    const payrollRule = ['Total income', 'Dependent person', 'Basic salary', 'BHYT', 'Bonus money', 'Tax'];
-    const stateOptions = payrollRule.map((value, index) => ({
-        key: value,
-        text: value,
-        value: index,
-    }));
-
-    const [payrollValue, setPayrollValue] = useState([]);
+    let groupOptions = groupFetchData.map((e, i) => {
+        let x = {
+            key: e.id,
+            text: e.name,
+            value: e.id,
+            alias: e.alias,
+            disabled: false
+        }
+        if (groupBelong.includes(e.id)) x.disabled = true;
+        else x.disabled = false;
+        return x;
+    })
+    const ruleOptions = ruleFetchData.map((e, i) => ({
+        key: e.id,
+        text: e.name,
+        value: e.id,
+        alias: e.alias
+    }))
 
     return <>
         <Modal
@@ -24,55 +33,64 @@ export default function RuleDependencyModal() {
             open={open}
             trigger={<Button>Add rule dependency</Button>}
         >
-            <Header icon='archive' content='Add rule dependency' />
+            <Header icon='archive' content='Add Dependency' />
             <Modal.Content>
 
                 <Table celled>
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>Payroll Name</Table.HeaderCell>
-                            <Table.HeaderCell>Name alias</Table.HeaderCell>
-                            <Table.HeaderCell>Action</Table.HeaderCell>
+                            <Table.HeaderCell>ID</Table.HeaderCell>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>Alias</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
 
                     <Table.Body>
-                        {payrollValue?.map((e, i) => {
+                        {ruleDepend?.map((e, i) => {
+                            const found = ruleFetchData.find(element => element.id == e);
                             return (<Table.Row key={i}>
-                                <Table.Cell>{stateOptions[e].key}</Table.Cell>
-                                <Table.Cell>{stateOptions[e].text}</Table.Cell>
-                                <Table.Cell>
-                                    <Button
-                                        basic
-                                        icon='trash'
-                                        onClick={(e, data) => console.log({ e, data, e })}
-                                    />
-                                </Table.Cell>
+                                <Table.Cell>{'R_' + found.id}</Table.Cell>
+                                <Table.Cell>{found.name}</Table.Cell>
+                                <Table.Cell>{found.alias}</Table.Cell>
                             </Table.Row>)
                         })}
-                    </Table.Body>
-                    <Table.Footer>
                         <Table.Row>
-                            <Table.HeaderCell colSpan='3'>
+                            <Table.Cell colSpan='3'>
                                 <Dropdown
-                                    placeholder='Select Payroll'
-                                    // fluid
+                                    placeholder='Select Rule'
                                     multiple
                                     search
                                     selection
-                                    options={stateOptions}
-                                    onChange={(e, data) => setPayrollValue(data.value)}
+                                    options={ruleOptions}
+                                    defaultValue={ruleDepend}
+                                    onChange={(e, data) => setRuleDepend(data.value)}
                                 />
-                                {/* <Button
-                                    floated='right'
-                                    primary>
-                                    Save
-                                </Button> */}
-                            </Table.HeaderCell>
-
-
+                            </Table.Cell>
                         </Table.Row>
-                    </Table.Footer>
+
+
+                        {groupDepend?.map((e, i) => {
+                            const found = groupFetchData.find(element => element.id == e);
+                            return (<Table.Row key={i}>
+                                <Table.Cell>{'GRP_' + found.id}</Table.Cell>
+                                <Table.Cell>{found.name}</Table.Cell>
+                                <Table.Cell>{found.alias}</Table.Cell>
+                            </Table.Row>)
+                        })}
+                        <Table.Row>
+                            <Table.Cell colSpan='3'>
+                                <Dropdown
+                                    placeholder='Select Group Rule'
+                                    multiple
+                                    search
+                                    selection
+                                    options={groupOptions}
+                                    defaultValue={groupDepend}
+                                    onChange={(e, data) => setGroupDepend(data.value)}
+                                />
+                            </Table.Cell>
+                        </Table.Row>
+                    </Table.Body>
                 </Table>
 
             </Modal.Content>
@@ -80,16 +98,18 @@ export default function RuleDependencyModal() {
                 {/* <Button color='red' onClick={() => setOpen(false)}>
                     <Icon name='remove' /> No
                 </Button> */}
-                <Button color='green' onClick={() => setOpen(false)}>
+                <Button color='green' onClick={() => {
+                    let x = _.cloneDeep(groupBelongOptions);
+                    x.forEach((e, i) => {
+                        if (groupDepend.includes(e.key)) x[i].disabled = true;
+                        else x[i].disabled = false;
+                    });
+                    setGroupBelongOptions(x)
+                    setOpen(false)
+                }}>
                     <Icon name='checkmark' /> Done
                 </Button>
             </Modal.Actions>
         </Modal>
-
-
-
-
-
-
     </>;
 }

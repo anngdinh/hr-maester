@@ -34,7 +34,7 @@ export default function HomePage() {
     // aaaaaaaa: 'aaaaaaaa',
   }
 
-  const [page, setPage] = useState(PageSw.allPayroll);
+  const [page, setPage] = useState(PageSw.newPayroll); // change default page here
 
   const handleItemClick = (e, { name }) => setPage(name)
 

@@ -202,4 +202,72 @@ const __customOperators = {
         type: "multiselect",
     },
 }
-export { __dataUser, __formularInit, __descriptionInit, __GroupPayroll, __AllPayroll, __templateFilter, __customOperators };
+const __query = {
+    combinator: "and",
+    rules: [
+
+    ],
+};
+const __queryFilter = [
+    {
+        label: "Employee",
+        options: [
+            {
+                label: "Employee ID",
+                value: "employee_id",
+                type: "emp_in",
+                options: [
+                    {
+                        label: "E1",
+                        value: "E1",
+                    },
+                    {
+                        label: "F1",
+                        value: "f1",
+                    },
+                    {
+                        label: "E2",
+                        value: "E2",
+                    },
+                    {
+                        label: "F2",
+                        value: "F2",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        label: "Department",
+        options: [
+            {
+                label: "Department Name",
+                value: "department_name",
+                type: "emp_in",
+                options: [
+                    {
+                        label: "Marketing",
+                        value: "E1",
+                    },
+                ],
+            },
+        ],
+    },
+    {
+        label: "Project",
+        options: [
+            {
+                label: "Project Name",
+                value: "project_name",
+                type: "emp_in",
+                options: [
+                    {
+                        label: "Marketing",
+                        value: "E1",
+                    },
+                ],
+            },
+        ],
+    },
+];
+export { __dataUser, __formularInit, __descriptionInit, __GroupPayroll, __AllPayroll, __templateFilter, __customOperators, __query, __queryFilter };

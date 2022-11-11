@@ -6,7 +6,7 @@ const RuleController = require('../controllers/RuleController');
 
 // ######  groupRule
 
-router.get ('/groupRule/read',   GroupRuleController.read);
+router.get('/groupRule/read', GroupRuleController.read);
 router.post('/groupRule/create', GroupRuleController.create);
 router.post('/groupRule/update', GroupRuleController.update);
 router.post('/groupRule/delete', GroupRuleController.delete);
@@ -18,7 +18,7 @@ router.post('/groupRule/updateRuleBelongGroupRule', GroupRuleController.updateRu
 
 // ######  rule
 
-router.get ('/rule/read',   RuleController.read);
+router.get('/rule/read', RuleController.read);
 router.post('/rule/create', RuleController.create);
 router.post('/rule/update', RuleController.update);
 router.post('/rule/delete', RuleController.delete);

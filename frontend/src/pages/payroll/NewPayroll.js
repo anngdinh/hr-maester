@@ -3,17 +3,15 @@ import { useState, useEffect } from 'react';
 
 import _ from 'lodash';
 
-import { Icon, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion } from 'semantic-ui-react'
-import Thead2 from "./components/Thead2";
+import { Icon, Input, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion } from 'semantic-ui-react'
+
 import Tbody2 from "./components/Tbody2";
 import Thead3 from "./components/Thead3_HyperFomular";
-import Variable from "./components/Variable";
-import RuleDependency from "./components/RuleDependency";
-import CreateGroupRule from "./components/CreateGroupRule";
 import VariableModal from "./components/VariableModal";
 import RuleDependencyModal from "./components/RuleDependencyModal";
-import { __dataUser, __descriptionInit, __formularInit } from "../data/PayrollData";
+import { __dataUser, __descriptionInit, __formularInit, __query, __queryFilter } from "../data/PayrollData";
 import MyQueryBuilder from "./components/MyQueryBuilder";
+import axios from "axios";
 
 const resultColumnOptions = [
     { key: 'A', text: 'A', value: 'A', },
@@ -23,20 +21,60 @@ const resultColumnOptions = [
     { key: 'E', text: 'E', value: 'E', },
 ]
 
-const payrollRule = ['Total income', 'Dependent person', 'Basic salary', 'BHYT', 'Bonus money', 'Tax'];
-const stateOptions = payrollRule.map((value, index) => ({
-    key: value,
-    text: value,
-    value: index,
-}));
-
 export default function NewPayroll() {
+    const [ruleFetchData, setRuleFetchData] = useState([]);
+    const [groupFetchData, setGroupFetchData] = useState([]);
+
+    const [newDataInfor, setNewDataInfor] = useState({
+        name: '',
+        alias: '',
+        description: '',
+    });
+    const [groupAllOptions, setGroupAllOptions] = useState([]);
+    const [groupBelong, setGroupBelong] = useState([])
+    const [groupBelongOptions, setGroupBelongOptions] = useState([])
+
+    const [variable, setVariable] = useState([
+        { name: 'Tax level 1', alias: 'tax_level_1', value: '0.1' },
+        { name: 'Tax level 2', alias: 'tax_level_2', value: '0.35' }]);
+
+    const [ruleDepend, setRuleDepend] = useState([])
+    const [groupDepend, setGroupDepend] = useState([])
+
+    const [query, setQuery] = useState(__query)
+    const queryFilter = __queryFilter
     const [dataUser, setDataUser] = useState([{}])
     const [formularArr, setFormularArr] = useState([])
     const [descriptionArr, setDescriptionArr] = useState([])
     const [dataArr, setDataArr] = useState([])
 
+
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                {
+                    const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/groupRule/read');
+                    setGroupFetchData(response);
+                    const x = response.map((e, i) => ({
+                        key: e.id,
+                        text: e.name,
+                        value: e.id,
+                        alias: e.alias,
+                        disabled: false
+                    }))
+                    setGroupAllOptions(x)
+                    setGroupBelongOptions(x)
+                }
+                {
+                    const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/rule/read');
+                    setRuleFetchData(response);
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        };
+        fetchData();
+
         setDataUser(__dataUser);
         setFormularArr(__formularInit)
         setDescriptionArr(__descriptionInit)
@@ -72,6 +110,13 @@ export default function NewPayroll() {
             value: index,
         }))
 
+    const onChangeNewInfor = (e) => {
+        let _newVar = _.cloneDeep(newDataInfor);
+        _newVar[e.target.name] = e.target.value;
+        // console.log(_newVar)
+        setNewDataInfor(_newVar);
+    }
+
     return (
         <>
             <Header as='h2'>
@@ -88,12 +133,16 @@ export default function NewPayroll() {
             <Container>
                 <Form>
                     <Form.Field>
-                        <label>Payroll</label>
-                        <input placeholder='Name' />
+                        <label>Name</label>
+                        <Input value={newDataInfor['name']} placeholder='Name...' name='name' onChange={onChangeNewInfor} />
+                    </Form.Field>
+                    <Form.Field>
+                        <label>Alias</label>
+                        <Input disabled value={newDataInfor['alias']} placeholder='...' name='alias' onChange={onChangeNewInfor} />
                     </Form.Field>
                     <Form.Field>
                         <label>Description</label>
-                        <input placeholder='Description' />
+                        <Input value={newDataInfor['description']} placeholder='Description...' name='description' onChange={onChangeNewInfor} />
                     </Form.Field>
                     <Form.Field>
                         <label>Group Payroll</label>
@@ -103,8 +152,8 @@ export default function NewPayroll() {
                             multiple
                             search
                             selection
-                            options={stateOptions}
-                        // onChange={(e, data) => setPayrollValue(data.value)}
+                            options={groupBelongOptions}
+                            onChange={(e, data) => setGroupBelong(data.value)}
                         />
                     </Form.Field>
                 </Form>
@@ -115,13 +164,19 @@ export default function NewPayroll() {
             </Header>
 
             <Container>
-
-                {/* <Button primary>Add rule Dependency</Button>
-                <Button primary>Add variable</Button>
-                <Variable></Variable>
-                <RuleDependency></RuleDependency> */}
-                <VariableModal></VariableModal>
-                <RuleDependencyModal></RuleDependencyModal>
+                <VariableModal
+                    variable={variable}
+                    setVariable={setVariable}></VariableModal>
+                <RuleDependencyModal
+                    groupBelong={groupBelong}
+                    groupBelongOptions={groupBelongOptions}
+                    setGroupBelongOptions={setGroupBelongOptions}
+                    groupFetchData={groupFetchData}
+                    ruleFetchData={ruleFetchData}
+                    ruleDepend={ruleDepend}
+                    setRuleDepend={setRuleDepend}
+                    groupDepend={groupDepend}
+                    setGroupDepend={setGroupDepend}></RuleDependencyModal>
             </Container>
 
             <Header as='h3' dividing>
@@ -129,7 +184,10 @@ export default function NewPayroll() {
             </Header>
 
             <Container>
-                <MyQueryBuilder></MyQueryBuilder>
+                <MyQueryBuilder
+                    query={query}
+                    setQuery={setQuery}
+                    queryFilter={queryFilter}></MyQueryBuilder>
                 <Button color='green' >
                     <Icon name='checkmark' /> Check
                 </Button>

@@ -3,12 +3,9 @@ import { useState } from 'react';
 
 import { Icon, Label, Menu, Table, Input, Button, Dropdown, Modal } from 'semantic-ui-react';
 
-export default function VariableModal() {
+export default function VariableModal({variable, setVariable}) {
     const [open, setOpen] = useState(false)
 
-    const [variable, setVariable] = useState([
-        { name: 'Tax level 1', alias: 'tax_level_1', value: '0.1' },
-        { name: 'Tax level 2', alias: 'tax_level_2', value: '0.35' }]);
     const [newVar, setNewVar] = useState({ name: '', alias: '', value: '' });
 
     const onChangeNewVar = (e) => {
