@@ -62,7 +62,7 @@ export default function NewGroupModal({ rule, setGroupPayroll }) {
             onOpen={() => setOpen(true)}
             open={open}
             trigger={
-                <Button positive floated="right" onClick={() => { }}>
+                <Button positive>
                     <Icon name='add' />
                     New Group
                 </Button>

@@ -2,7 +2,7 @@ import axios from 'axios';
 import _, { set } from 'lodash';
 import { useState, useEffect } from 'react';
 
-import { Icon, Label, Menu, Table, Input, Button, Dropdown, Header, Container } from 'semantic-ui-react';
+import { Icon, Label, Menu, Table, Input, Button, Dropdown, Header, Container, Form } from 'semantic-ui-react';
 import EditGroupModal from './components/EditGroupModal';
 import NewGroupModal from "./components/NewGroupModal";
 
@@ -31,7 +31,7 @@ export default function GroupPayroll() {
             </Header.Content>
         </Header>
 
-        <Container>
+        <Container textAlign='right' style={{ marginBottom: '10px' }}>
             <NewGroupModal
                 rule={groupPayroll.rule}
                 setGroupPayroll={setGroupPayroll}
@@ -67,7 +67,7 @@ export default function GroupPayroll() {
                                 </Table.Cell>
 
                                 <Table.Cell>
-                                    <div>
+                                    <Form.Group inline>
                                         <EditGroupModal
                                             g_rule_id={parseInt(key)}
                                             groupPayroll={groupPayroll}
@@ -75,11 +75,11 @@ export default function GroupPayroll() {
                                         ></EditGroupModal>
                                         <Button
                                             basic
+                                            negative
                                             icon='trash'
                                             onClick={() => { }}
                                         />
-                                    </div>
-
+                                    </Form.Group>
                                 </Table.Cell>
                             </Table.Row>
                         }
