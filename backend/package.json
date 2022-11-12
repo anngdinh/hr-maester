@@ -24,6 +24,7 @@
     "session": "^0.1.0"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "nodemon index.js",
+    "deploy": "node index.js"
   }
 }
