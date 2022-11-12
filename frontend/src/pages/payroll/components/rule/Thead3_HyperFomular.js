@@ -3,18 +3,18 @@ import _ from 'lodash';
 import { Table, Input, Dropdown } from 'semantic-ui-react'
 
 import { HyperFormula } from 'hyperformula';
-import ExpParser from '../utils/ExpParser';
+import ExpParser from '../../utils/ExpParser';
 
 
-import { valueError, emVar, tableVar, indexHolder, employeeTableName, tableTableName, getDataColumn } from "../utils/Constant";
+import { valueError, emVar, tableVar, indexHolder, employeeTableName, tableTableName, getDataColumn } from "../../utils/Constant";
 
 const optionsTypeInput = [
     { key: 'formular', text: 'F', value: 'formular' },
     { key: 'digit', text: 'D', value: 'digit' },
 ]
 
-export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr, setDataArr, descriptionArr, setDescriptionArr }) {
-    let _dataArr = _.cloneDeep(dataArr);
+export default function Thead3({ dataUser, formularArr, setFormularArr, dataTableArr, setDataTableArr, descriptionArr, setDescriptionArr }) {
+    let _dataTableArr = _.cloneDeep(dataTableArr);
     let _formularArr = _.cloneDeep(formularArr);
 
 
@@ -39,7 +39,7 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
     hfInstance.setSheetContent(employeeSheetId, dataUserArr);
 
     const tableSheetId = hfInstance.getSheetId(hfInstance.addSheet(tableTableName));
-    hfInstance.setSheetContent(tableSheetId, dataArr);
+    hfInstance.setSheetContent(tableSheetId, dataTableArr);
 
     const HyperFormulaVersion = (e, index) => {
         let value = e.target.value;
@@ -50,7 +50,7 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
         var formularExtract = _formularArr.map(e => ExpParser(e))
         // console.log({ formularExtract })
 
-        _dataArr = _.cloneDeep(dataArr)
+        _dataTableArr = _.cloneDeep(dataTableArr)
 
         var parserString = _formularArr.map((e, i) => {
             let parseElement = formularExtract[i]?.map((e) => {
@@ -68,16 +68,16 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
         })
 
 
-        for (let i = 0; i < _dataArr.length; i++) {
-            for (let j = 0; j < _dataArr[i].length; j++) {
+        for (let i = 0; i < _dataTableArr.length; i++) {
+            for (let j = 0; j < _dataTableArr[i].length; j++) {
                 let x = parserString[j].replaceAll(indexHolder, i + 1)
-                _dataArr[i][j] = x;
+                _dataTableArr[i][j] = x;
             }
         }
-        hfInstance.setSheetContent(tableSheetId, _dataArr);
+        hfInstance.setSheetContent(tableSheetId, _dataTableArr);
         const sheetValue = hfInstance.getSheetValues(tableSheetId)
 
-        console.log({ _dataArr, sheetValue })
+        console.log({ _dataTableArr, sheetValue })
 
         let checkError = sheetValue.map((e) => {
             return e.map((value) => {
@@ -90,11 +90,11 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
         })
         console.log({ _formularArr, checkError })
 
-        setDataArr(checkError);
+        setDataTableArr(checkError);
     }
 
-    // function getDataColumn(dataArr, index) {
-    //     return dataArr.map((e) => e[index])
+    // function getDataColumn(dataTableArr, index) {
+    //     return dataTableArr.map((e) => e[index])
     // }
 
     return <Table.Header>
@@ -137,7 +137,7 @@ export default function Thead3({ dataUser, formularArr, setFormularArr, dataArr,
                             type="text"
                             defaultValue={value}
                             placeholder="Formular..."
-                            error={valueError.reduce((previousValue, currentValue) => previousValue || getDataColumn(dataArr, index).includes(currentValue), false)}
+                            error={valueError.reduce((previousValue, currentValue) => previousValue || getDataColumn(dataTableArr, index).includes(currentValue), false)}
                             // onChange={(e) => HotFormularParserVersion(e, index)}
                             onChange={(e) => HyperFormulaVersion(e, index)}
                         />

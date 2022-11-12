@@ -3,8 +3,8 @@ import _, { set } from 'lodash';
 import { useState, useEffect } from 'react';
 
 import { Icon, Label, Menu, Table, Input, Button, Dropdown, Header, Container, Form } from 'semantic-ui-react';
-import EditGroupModal from './components/EditGroupModal';
-import NewGroupModal from "./components/NewGroupModal";
+import EditGroupModal from './components/group/EditGroupModal';
+import NewGroupModal from "./components/group/NewGroupModal";
 
 export default function GroupPayroll() {
     const [groupPayroll, setGroupPayroll] = useState({ "rule": {}, "belong": {}, "g_rule": {} })

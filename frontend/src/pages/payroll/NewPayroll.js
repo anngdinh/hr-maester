@@ -5,21 +5,14 @@ import _ from 'lodash';
 
 import { Icon, Input, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion } from 'semantic-ui-react'
 
-import Tbody2 from "./components/Tbody2";
-import Thead3 from "./components/Thead3_HyperFomular";
-import VariableModal from "./components/VariableModal";
-import RuleDependencyModal from "./components/RuleDependencyModal";
+import VariableModal from "./components/rule/VariableModal";
+import RuleDependencyModal from "./components/rule/RuleDependencyModal";
 import { __dataUser, __descriptionInit, __formularInit, __query, __queryFilter } from "../data/PayrollData";
-import MyQueryBuilder from "./components/MyQueryBuilder";
+import MyQueryBuilder from "./components/rule/MyQueryBuilder";
 import axios from "axios";
-
-const resultColumnOptions = [
-    { key: 'A', text: 'A', value: 'A', },
-    { key: 'B', text: 'B', value: 'B', },
-    { key: 'C', text: 'C', value: 'C', },
-    { key: 'D', text: 'D', value: 'D', },
-    { key: 'E', text: 'E', value: 'E', },
-]
+import AddDataGrid from "./components/rule/AddDataGrid";
+import FormulaTable from "./components/rule/FormulaTable";
+import BasicInformation from "./components/rule/BasicInformation";
 
 export default function NewPayroll() {
     const [ruleFetchData, setRuleFetchData] = useState([]);
@@ -42,11 +35,12 @@ export default function NewPayroll() {
     const [groupDepend, setGroupDepend] = useState([])
 
     const [query, setQuery] = useState(__query)
-    const queryFilter = __queryFilter
+    const [queryFilter, setQueryFilter] = useState(__queryFilter)
+
     const [dataUser, setDataUser] = useState([{}])
     const [formularArr, setFormularArr] = useState([])
     const [descriptionArr, setDescriptionArr] = useState([])
-    const [dataArr, setDataArr] = useState([])
+    const [dataTableArr, setDataTableArr] = useState([])
 
 
     useEffect(() => {
@@ -78,43 +72,21 @@ export default function NewPayroll() {
         setDataUser(__dataUser);
         setFormularArr(__formularInit)
         setDescriptionArr(__descriptionInit)
-        setDataArr(new Array(__dataUser.length).fill(0).map(() => new Array(__formularInit.length).fill(0)))
+        setDataTableArr(new Array(__dataUser.length).fill(0).map(() => new Array(__formularInit.length).fill(0)))
     }, [])
 
-    const ExtractUserRow = () => {
-        const extractUserRow = dataUser.map(e => {
-            return { id: e.id, name: e.name };
-        });
-        // console.log({ extractUserRow })
-        return extractUserRow;
-    }
-    const NewColumn = () => {
-        let _descriptionArr = _.cloneDeep(descriptionArr)
-        _descriptionArr.push("")
-
-        let _formularArr = _.cloneDeep(formularArr);
-        _formularArr.push("")
-
-        let _dataArr = _.cloneDeep(dataArr);
-        _dataArr.map((e) => e.push(0))
-
-        setDescriptionArr(_descriptionArr);
-        setFormularArr(_formularArr);
-        setDataArr(_dataArr);
-    }
-
-    const getOptions = (number, prefix) =>
-        _.times(number, (index) => ({
-            key: index,
-            text: `${prefix}${index * 10 + 10}`,
-            value: index,
-        }))
-
-    const onChangeNewInfor = (e) => {
-        let _newVar = _.cloneDeep(newDataInfor);
-        _newVar[e.target.name] = e.target.value;
-        // console.log(_newVar)
-        setNewDataInfor(_newVar);
+    const submitNewRule = () => {
+        let data = {
+            ...newDataInfor,
+            variable: variable,
+            groupBelong: groupBelong,
+            ruleDepend: ruleDepend,
+            groupBelong: groupBelong,
+            query: JSON.stringify(query),
+            formularArr: formularArr,
+            descriptionArr: descriptionArr
+        }
+        console.log(data)
     }
 
     return (
@@ -131,32 +103,12 @@ export default function NewPayroll() {
                 1. Information
             </Header>
             <Container>
-                <Form>
-                    <Form.Field>
-                        <label>Name</label>
-                        <Input value={newDataInfor['name']} placeholder='Name...' name='name' onChange={onChangeNewInfor} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Alias</label>
-                        <Input disabled value={newDataInfor['alias']} placeholder='...' name='alias' onChange={onChangeNewInfor} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Description</label>
-                        <Input value={newDataInfor['description']} placeholder='Description...' name='description' onChange={onChangeNewInfor} />
-                    </Form.Field>
-                    <Form.Field>
-                        <label>Group Payroll</label>
-                        <Dropdown
-                            placeholder='Group Payroll'
-                            // fluid
-                            multiple
-                            search
-                            selection
-                            options={groupBelongOptions}
-                            onChange={(e, data) => setGroupBelong(data.value)}
-                        />
-                    </Form.Field>
-                </Form>
+                <BasicInformation
+                    newDataInfor={newDataInfor}
+                    setNewDataInfor={setNewDataInfor}
+                    groupBelongOptions={groupBelongOptions}
+                    setGroupBelong={setGroupBelong}
+                ></BasicInformation>
             </Container>
 
             <Header as='h3' dividing>
@@ -188,11 +140,6 @@ export default function NewPayroll() {
                     query={query}
                     setQuery={setQuery}
                     queryFilter={queryFilter}></MyQueryBuilder>
-                <Button color='green' >
-                    <Icon name='checkmark' /> Check
-                </Button>
-
-                200 employees are applied !
             </Container>
 
 
@@ -200,76 +147,30 @@ export default function NewPayroll() {
                 4. Additional data
             </Header>
             <Container>
-                <Segment placeholder>
-                    <Header icon>
-                        <Icon name='pdf file outline' />
-                        Additional data for each employee such as coefficient salary, ...
-                    </Header>
-                    <Button primary>Add Data</Button>
-                </Segment>
+                <AddDataGrid></AddDataGrid>
             </Container>
 
 
             <Header as='h3' dividing>
-                5. Formular table
+                5. Formula table
             </Header>
 
-            <Container textAlign='right' fluid>
-                <Container fluid>
-                    <Button positive floated="right" onClick={() => NewColumn()}>
-                        <Icon name='add' />
-                        New column
-                    </Button>
-                    Preview
-                    <Dropdown
-                        placeholder='10'
-                        compact
-                        selection
-                        options={getOptions(3, ' ')}
-                    />
-                </Container>
-            </Container>
+            <FormulaTable
+                formularArr={formularArr}
+                setFormularArr={setFormularArr}
+                descriptionArr={descriptionArr}
+                setDescriptionArr={setDescriptionArr}
+                dataTableArr={dataTableArr}
+                setDataTableArr={setDataTableArr}
+                dataUser={dataUser}
+            ></FormulaTable>
 
-
-            <Table celled>
-                <Thead3
-                    dataUser={dataUser}
-                    formularArr={formularArr}
-                    setFormularArr={setFormularArr}
-                    dataArr={dataArr}
-                    setDataArr={setDataArr}
-                    descriptionArr={descriptionArr}
-                    setDescriptionArr={setDescriptionArr}>
-                </Thead3>
-                <Tbody2
-                    extractUserRow={ExtractUserRow()}
-                    dataArr={dataArr}>
-                </Tbody2>
-            </Table>
-
-            <Form>
-                <Form.Field inline>
-                    <label>Result Column</label>
-                    <Dropdown
-                        // placeholder='10'
-                        compact
-                        selection
-                        options={resultColumnOptions}
-                    />
-                </Form.Field>
-            </Form>
 
             <Container textAlign="center">
-                <Button color='green' >
+                <Button color='green' onClick={submitNewRule}>
                     <Icon name='checkmark' /> Create new payroll
                 </Button>
             </Container>
-            {/* <Test></Test> */}
-            {/* <Dashboard></Dashboard> */}
-
-            {/* <CreateGroupRule></CreateGroupRule> */}
-
-
         </>
     );
 };
