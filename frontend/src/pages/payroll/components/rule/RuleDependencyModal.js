@@ -51,7 +51,14 @@ export default function RuleDependencyModal({ groupBelongOptions, setGroupBelong
                             return (<Table.Row key={i}>
                                 <Table.Cell>{'R_' + found.id}</Table.Cell>
                                 <Table.Cell>{found.name}</Table.Cell>
-                                <Table.Cell>{found.alias}</Table.Cell>
+                                <Table.Cell>
+                                    <div style={{ display: found.alias === "" ? "none" : "block" }}>
+                                        <Label color='teal' tag >
+                                            {found.alias}
+                                        </Label>
+                                    </div>
+                                    {/* {found.alias} */}
+                                </Table.Cell>
                             </Table.Row>)
                         })}
                         <Table.Row>
@@ -74,7 +81,14 @@ export default function RuleDependencyModal({ groupBelongOptions, setGroupBelong
                             return (<Table.Row key={i}>
                                 <Table.Cell>{'GRP_' + found.id}</Table.Cell>
                                 <Table.Cell>{found.name}</Table.Cell>
-                                <Table.Cell>{found.alias}</Table.Cell>
+                                <Table.Cell>
+                                    <div style={{ display: found.alias === "" ? "none" : "block" }}>
+                                        <Label color='teal' tag >
+                                            {found.alias}
+                                        </Label>
+                                    </div>
+                                    {/* {found.alias} */}
+                                </Table.Cell>
                             </Table.Row>)
                         })}
                         <Table.Row>

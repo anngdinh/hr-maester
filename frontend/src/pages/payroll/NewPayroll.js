@@ -22,6 +22,7 @@ export default function NewPayroll() {
         name: '',
         alias: '',
         description: '',
+        isIncome: true,
     });
     const [groupAllOptions, setGroupAllOptions] = useState([]);
     const [groupBelong, setGroupBelong] = useState([])
@@ -81,12 +82,14 @@ export default function NewPayroll() {
             variable: variable,
             groupBelong: groupBelong,
             ruleDepend: ruleDepend,
-            groupBelong: groupBelong,
-            query: JSON.stringify(query),
+            groupDepend: groupDepend,
+            // query: JSON.stringify(query),
+            query: query,
             formularArr: formularArr,
             descriptionArr: descriptionArr
         }
         console.log(data)
+        const x = axios.post(process.env.REACT_APP_BACKEND + '/api/payroll/rule/createFullRule', data);
     }
 
     return (

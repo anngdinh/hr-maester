@@ -2,8 +2,9 @@ import _ from 'lodash';
 import { useState } from 'react';
 
 import { Icon, Label, Menu, Table, Input, Button, Dropdown, Modal } from 'semantic-ui-react';
+import AliasRender from '../../utils/AliasRender';
 
-export default function VariableModal({variable, setVariable}) {
+export default function VariableModal({ variable, setVariable }) {
     const [open, setOpen] = useState(false)
 
     const [newVar, setNewVar] = useState({ name: '', alias: '', value: '' });
@@ -11,6 +12,7 @@ export default function VariableModal({variable, setVariable}) {
     const onChangeNewVar = (e) => {
         let _newVar = _.cloneDeep(newVar);
         _newVar[e.target.name] = e.target.value;
+        _newVar.alias = AliasRender(_newVar.name)
         setNewVar(_newVar);
     }
     const saveNewVar = () => {
@@ -42,7 +44,7 @@ export default function VariableModal({variable, setVariable}) {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Variable Name</Table.HeaderCell>
-                            <Table.HeaderCell>Name alias</Table.HeaderCell>
+                            <Table.HeaderCell>Alias</Table.HeaderCell>
                             <Table.HeaderCell>Value</Table.HeaderCell>
                             <Table.HeaderCell>Action</Table.HeaderCell>
                         </Table.Row>
@@ -52,7 +54,14 @@ export default function VariableModal({variable, setVariable}) {
                         {variable?.map((e, i) => {
                             return (<Table.Row key={i}>
                                 <Table.Cell>{e.name}</Table.Cell>
-                                <Table.Cell>{e.alias}</Table.Cell>
+                                <Table.Cell>
+                                    <div style={{ display: e.alias === "" ? "none" : "block" }}>
+                                        <Label color='teal' tag >
+                                            {e.alias}
+                                        </Label>
+                                    </div>
+                                    {/* {e.alias} */}
+                                </Table.Cell>
                                 <Table.Cell>{e.value}</Table.Cell>
                                 <Table.Cell>
                                     <Button
@@ -69,7 +78,12 @@ export default function VariableModal({variable, setVariable}) {
                                 <Input value={newVar['name']} placeholder='Name...' name='name' onChange={onChangeNewVar} />
                             </Table.Cell>
                             <Table.Cell>
-                                <Input value={newVar['alias']} placeholder='Alias...' name='alias' onChange={onChangeNewVar} />
+                                <div style={{ display: newVar.alias === "" ? "none" : "block" }}>
+                                    <Label color='teal' tag >
+                                        {newVar.alias}
+                                    </Label>
+                                </div>
+                                {/* <Input value={newVar['alias']} placeholder='Alias...' name='alias' onChange={onChangeNewVar} /> */}
                             </Table.Cell>
                             <Table.Cell>
                                 <Input value={newVar['value']} placeholder='Value...' name='value' onChange={onChangeNewVar} />
