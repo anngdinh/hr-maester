@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class salary_group_rule extends Model {
+  class export_payroll_monthly extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of DataTypes lifecycle.
@@ -13,25 +13,29 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  salary_group_rule.init({
+  export_payroll_monthly.init({
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER
     },
+    monthId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "months",
+        key: "id"
+      }
+    },
     name: {
       type: DataTypes.STRING
     },
-    alias: {
-      type: DataTypes.STRING
-    },
-    description: {
-      type: DataTypes.STRING
+    canModify: {
+      type: DataTypes.BOOLEAN
     },
   }, {
     sequelize,
-    modelName: 'salary_group_rule',
+    modelName: 'export_payroll_monthly',
   });
-  return salary_group_rule;
+  return export_payroll_monthly;
 };

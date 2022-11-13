@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class preview_payroll_monthly extends Model {
+  class export_payroll_monthly_final extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of DataTypes lifecycle.
@@ -13,13 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  preview_payroll_monthly.init({
-    payroll_monthly_id: {
+  export_payroll_monthly_final.init({
+    export_payroll_monthly_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       references: {
-        model: "payroll_monthlies",
+        model: "export_payroll_monthlies",
         key: "id"
       }
     },
@@ -44,15 +44,9 @@ module.exports = (sequelize, DataTypes) => {
     value: {
       type: DataTypes.INTEGER
     },
-    isModified: {
-      type: DataTypes.BOOLEAN
-    },
-    newValue: {
-      type: DataTypes.INTEGER
-    },
   }, {
     sequelize,
-    modelName: 'preview_payroll_monthly',
+    modelName: 'export_payroll_monthly_final',
   });
-  return preview_payroll_monthly;
+  return export_payroll_monthly_final;
 };

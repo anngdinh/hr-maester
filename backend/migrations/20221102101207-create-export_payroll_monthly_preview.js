@@ -2,13 +2,13 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('preview_payroll_monthlies', {
-      payroll_monthly_id: {
+    await queryInterface.createTable('export_payroll_monthly_previews', {
+      export_payroll_monthly_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
         references: {
-          model: "payroll_monthlies",
+          model: "export_payroll_monthlies",
           key: "id"
         }
       },
@@ -50,6 +50,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('preview_payroll_monthlies');
+    await queryInterface.dropTable('export_payroll_monthly_previews');
   }
 };

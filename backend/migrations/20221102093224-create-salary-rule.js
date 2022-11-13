@@ -15,25 +15,41 @@ module.exports = {
       alias: {
         type: Sequelize.STRING
       },
-      isIncome: {
+      description: {
+        type: Sequelize.STRING
+      },
+      isGroup: {
         type: Sequelize.BOOLEAN
       },
-      description: {
+      isBasicFormula: {
+        type: Sequelize.BOOLEAN
+      },
+      formula: {
         type: Sequelize.STRING
       },
       query: {
         type: Sequelize.STRING
       },
-      valid: {
+      groupBelongId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "salary_rules",
+          key: "id"
+        }
+      },
+      state: {
         type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: new Date()
+        
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: new Date()
       }
     });
   },
