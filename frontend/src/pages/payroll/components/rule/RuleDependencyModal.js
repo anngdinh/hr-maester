@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { Icon, Label, Menu, Table, Input, Button, Dropdown, Modal, Header } from 'semantic-ui-react';
 
-export default function RuleDependencyModal({ groupBelongOptions, setGroupBelongOptions, groupBelong, groupFetchData, ruleFetchData, ruleDepend, setRuleDepend, groupDepend, setGroupDepend }) {
+export default function RuleDependencyModal({ groupBelongOptions, setGroupBelongOptions, groupBelong, groupFetchData, ruleFetchData, ruleDepend, setRuleDepend }) {
     const [open, setOpen] = useState(false)
     let groupOptions = groupFetchData.map((e, i) => {
         let x = {
@@ -71,36 +71,6 @@ export default function RuleDependencyModal({ groupBelongOptions, setGroupBelong
                                     options={ruleOptions}
                                     defaultValue={ruleDepend}
                                     onChange={(e, data) => setRuleDepend(data.value)}
-                                />
-                            </Table.Cell>
-                        </Table.Row>
-
-
-                        {groupDepend?.map((e, i) => {
-                            const found = groupFetchData.find(element => element.id == e);
-                            return (<Table.Row key={i}>
-                                <Table.Cell>{'GRP_' + found.id}</Table.Cell>
-                                <Table.Cell>{found.name}</Table.Cell>
-                                <Table.Cell>
-                                    <div style={{ display: found.alias === "" ? "none" : "block" }}>
-                                        <Label color='teal' tag >
-                                            {found.alias}
-                                        </Label>
-                                    </div>
-                                    {/* {found.alias} */}
-                                </Table.Cell>
-                            </Table.Row>)
-                        })}
-                        <Table.Row>
-                            <Table.Cell colSpan='3'>
-                                <Dropdown
-                                    placeholder='Select Group Rule'
-                                    multiple
-                                    search
-                                    selection
-                                    options={groupOptions}
-                                    defaultValue={groupDepend}
-                                    onChange={(e, data) => setGroupDepend(data.value)}
                                 />
                             </Table.Cell>
                         </Table.Row>

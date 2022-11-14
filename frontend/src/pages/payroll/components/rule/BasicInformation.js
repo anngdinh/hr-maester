@@ -12,14 +12,14 @@ export default function BasicInformation({
         let _newVar = _.cloneDeep(newDataInfor);
         _newVar[e.target.name] = e.target.value;
         _newVar.alias = AliasRender(_newVar.name)
-        console.log(_newVar)
+        // console.log(_newVar)
         setNewDataInfor(_newVar);
     }
 
     const handleCheckboxChange = (e, { value }) => {
-        console.log({ value })
+        // console.log({ value })
         let _newVar = _.cloneDeep(newDataInfor);
-        _newVar.isIncome = value === 0 ? false : true;
+        _newVar.isGroup = value === 0 ? false : true;
         setNewDataInfor(_newVar);
     }
 
@@ -43,17 +43,15 @@ export default function BasicInformation({
             <Form.Group inline>
                 <label>Type</label>
                 <Form.Radio
-                    label='Income'
-                    name='isIncome'
+                    label='Group'
                     value={1}
-                    checked={newDataInfor.isIncome === true}
+                    checked={newDataInfor.isGroup === true}
                     onChange={handleCheckboxChange}
                 />
                 <Form.Radio
-                    label='Outcome'
-                    name='isIncome'
+                    label='Rule'
                     value={0}
-                    checked={newDataInfor.isIncome === false}
+                    checked={newDataInfor.isGroup === false}
                     onChange={handleCheckboxChange}
                 />
             </Form.Group>
@@ -64,11 +62,10 @@ export default function BasicInformation({
             </Form.Field>
 
             <Form.Field>
-                <label>Group Payroll</label>
+                <label>Group</label>
                 <Dropdown
-                    placeholder='Group Payroll'
-                    // fluid
-                    multiple
+                    placeholder='Group'
+                    clearable
                     search
                     selection
                     options={groupBelongOptions}
