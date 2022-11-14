@@ -11,7 +11,7 @@ module.exports = {
         description: 'LƯƠNG THỰC NHẬN',
         isGroup: true,
         isBasicFormula: true,
-        formula: 'r2 - r3 - r4 - r5',
+        formula: 'rid2 - rid3 - rid4 - rid5',
         query: '*',
         // groupBelongId: 0,
         state: true
@@ -143,7 +143,7 @@ module.exports = {
         description: 'bao hiem xa hoi',
         isGroup: false,
         isBasicFormula: true,
-        formula: 'r7 * 0.08',
+        formula: 'rid7 * 0.08',
         query: '*',
         groupBelongId: 11,
         state: true
@@ -155,7 +155,7 @@ module.exports = {
         description: 'bao hiem suc khoe',
         isGroup: false,
         isBasicFormula: true,
-        formula: 'r7 * 0.015',
+        formula: 'rid7 * 0.015',
         query: '*',
         groupBelongId: 11,
         state: true
@@ -167,7 +167,7 @@ module.exports = {
         description: 'bao hiem that nghiep',
         isGroup: false,
         isBasicFormula: true,
-        formula: 'r7 * 0.01',
+        formula: 'rid7 * 0.01',
         query: '*',
         groupBelongId: 11,
         state: true
@@ -203,7 +203,7 @@ module.exports = {
         description: 'Thu nhap tinh thue',
         isGroup: false,
         isBasicFormula: true,
-        formula: 'r6 + r9 - r16',
+        formula: 'rid6 + rid9 - rid16',
         query: '*',
         groupBelongId: 15,
         state: true

@@ -51,17 +51,6 @@ module.exports = (sequelize, DataTypes) => {
     state: {
       type: DataTypes.BOOLEAN
     },
-    createdAt: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: new Date()
-      
-    },
-    updatedAt: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: new Date()
-    }
   }, {
     sequelize,
     modelName: 'salary_rule',

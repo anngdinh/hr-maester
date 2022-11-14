@@ -12,9 +12,7 @@ module.exports = {
         birthday: '',
         email: 'an@maester.com',
         phoneNumber: '012345678',
-        address: '120 Matthan, New York',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        address: '120 Matthan, New York'
       },
       {
         id: 2,
@@ -24,9 +22,7 @@ module.exports = {
         birthday: '',
         email: 'quan@maester.com',
         phoneNumber: '012345678',
-        address: 'KTX khu A, DHQG HCM',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        address: 'KTX khu A, DHQG HCM'
       },
     ], {});
   },
