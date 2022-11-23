@@ -1,4 +1,4 @@
-// use in sidebar.js and homepage.js
+// use in sidebar.js and homepage.js and use with navigate 
 export const DefineRoutes = {
     // pages
     dashboard: {path: "/dashboard"},

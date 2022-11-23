@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Tab, Icon, Popup, Label, Menu, Table, Input, Button, Dropdown, Header, Container } from 'semantic-ui-react';
 import { __AllPayroll } from '../../data/PayrollData';
+import { DefineRoutes } from '../../routes';
 
 
 export default function AllPayrule() {
@@ -52,7 +53,7 @@ export default function AllPayrule() {
             />
 
             <Menu.Menu position='right'>
-                <Button positive onClick={() => navigate('/payrule/new')}>
+                <Button positive onClick={() => navigate(DefineRoutes.newPayrule.path)}>
                     <Icon name='add' />
                     New Payrule
                 </Button>
