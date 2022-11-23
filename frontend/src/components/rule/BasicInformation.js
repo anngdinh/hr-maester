@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, Form, Input, Label } from 'semantic-ui-react';
+import { Dropdown, Form, Icon, Input, Label, Popup } from 'semantic-ui-react';
 import AliasRender from '../../utils/AliasRender';
 
 export default function BasicInformation({

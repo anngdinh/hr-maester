@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import MuiQueryBuilder from "mui-querybuilder";
-import { __customOperators, __templateFilter } from "../../../data/PayrollData";
+import { __customOperators, __templateFilter } from "../../data/PayrollData";
 import { Button, Container, Icon } from 'semantic-ui-react';
 
 

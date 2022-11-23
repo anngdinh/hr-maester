@@ -3,18 +3,19 @@ import { useState, useEffect } from 'react';
 
 import _ from 'lodash';
 
-import { Icon, Input, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion } from 'semantic-ui-react'
+import { Icon, Popup, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion } from 'semantic-ui-react'
 
-import VariableModal from "./components/rule/VariableModal";
-import RuleDependencyModal from "./components/rule/RuleDependencyModal";
-import { __dataUser, __descriptionInit, __formularInit, __query, __queryFilter } from "../data/PayrollData";
-import MyQueryBuilder from "./components/rule/MyQueryBuilder";
+import VariableModal from "./VariableModal";
+import RuleDependencyModal from "./RuleDependencyModal";
+import { __dataUser, __descriptionInit, __formularInit, __query, __queryFilter } from "../../data/PayrollData";
+import MyQueryBuilder from "./MyQueryBuilder";
 import axios from "axios";
-import AddDataGrid from "./components/rule/AddDataGrid";
-import FormulaTable from "./components/rule/FormulaTable";
-import BasicInformation from "./components/rule/BasicInformation";
+import AddDataGrid from "./AddDataGrid";
+import FormulaTable from "./FormulaTable";
+import BasicInformation from "./BasicInformation";
+import FormulaBasic from "./FormulaBasic";
 
-export default function NewPayroll() {
+export default function NewPayrule() {
     const [ruleFetchData, setRuleFetchData] = useState([]);
     const [groupFetchData, setGroupFetchData] = useState([]);
 
@@ -22,10 +23,10 @@ export default function NewPayroll() {
         name: '',
         alias: '',
         description: '',
-        isIncome: true,
+        isGroup: false
     });
     const [groupAllOptions, setGroupAllOptions] = useState([]);
-    const [groupBelong, setGroupBelong] = useState([])
+    const [groupBelong, setGroupBelong] = useState(-1)
     const [groupBelongOptions, setGroupBelongOptions] = useState([])
 
     const [variable, setVariable] = useState([
@@ -33,10 +34,11 @@ export default function NewPayroll() {
         { name: 'Tax level 2', alias: 'tax_level_2', value: '0.35' }]);
 
     const [ruleDepend, setRuleDepend] = useState([])
-    const [groupDepend, setGroupDepend] = useState([])
 
     const [query, setQuery] = useState(__query)
     const [queryFilter, setQueryFilter] = useState(__queryFilter)
+
+    const [isBasicFormula, setIsBasicFormula] = useState(true)
 
     const [dataUser, setDataUser] = useState([{}])
     const [formularArr, setFormularArr] = useState([])
@@ -48,7 +50,13 @@ export default function NewPayroll() {
         const fetchData = async () => {
             try {
                 {
-                    const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/groupRule/read');
+                    const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/rule/read',
+                        {
+                            attributes: [
+                                "id",
+                                "name",
+                            ]
+                        });
                     setGroupFetchData(response);
                     const x = response.map((e, i) => ({
                         key: e.id,
@@ -81,8 +89,7 @@ export default function NewPayroll() {
             ...newDataInfor,
             variable: variable,
             groupBelong: groupBelong,
-            ruleDepend: ruleDepend,
-            groupDepend: groupDepend,
+            // ruleDepend: ruleDepend,
             // query: JSON.stringify(query),
             query: query,
             formularArr: formularArr,
@@ -121,17 +128,26 @@ export default function NewPayroll() {
             <Container>
                 <VariableModal
                     variable={variable}
-                    setVariable={setVariable}></VariableModal>
-                <RuleDependencyModal
+                    setVariable={setVariable}>
+                </VariableModal>
+                <Popup trigger={<Icon name='info circle' color='blue' size='large' />}>
+                    You can use your variable to calculate in your fomular.
+                </Popup>
+
+                {variable.map((e, i) => {
+                    return (<Label key={i} color='teal' tag >
+                        {e.alias}
+                    </Label>)
+                })}
+
+                {/* <RuleDependencyModal
                     groupBelong={groupBelong}
                     groupBelongOptions={groupBelongOptions}
                     setGroupBelongOptions={setGroupBelongOptions}
                     groupFetchData={groupFetchData}
                     ruleFetchData={ruleFetchData}
                     ruleDepend={ruleDepend}
-                    setRuleDepend={setRuleDepend}
-                    groupDepend={groupDepend}
-                    setGroupDepend={setGroupDepend}></RuleDependencyModal>
+                    setRuleDepend={setRuleDepend}></RuleDependencyModal> */}
             </Container>
 
             <Header as='h3' dividing>
@@ -155,18 +171,43 @@ export default function NewPayroll() {
 
 
             <Header as='h3' dividing>
-                5. Formula table
+                5. Formula
             </Header>
 
-            <FormulaTable
-                formularArr={formularArr}
-                setFormularArr={setFormularArr}
-                descriptionArr={descriptionArr}
-                setDescriptionArr={setDescriptionArr}
-                dataTableArr={dataTableArr}
-                setDataTableArr={setDataTableArr}
-                dataUser={dataUser}
-            ></FormulaTable>
+            <Container>
+                <Form>
+                    <Form.Group inline>
+                        <label>Type Fomula</label>
+                        <Form.Radio
+                            label='Basic'
+                            checked={isBasicFormula === true}
+                            onChange={() => setIsBasicFormula(true)}
+                        />
+                        <Form.Radio
+                            label='Table'
+                            checked={isBasicFormula === false}
+                            onChange={() => setIsBasicFormula(false)}
+                        />
+                    </Form.Group>
+                </Form>
+            </Container>
+
+            <div style={{ display: isBasicFormula === true ? "block" : "none" }}>
+                <Container>
+                    <FormulaBasic></FormulaBasic>
+                </Container>
+            </div>
+            <div style={{ display: isBasicFormula === false ? "block" : "none" }}>
+                <FormulaTable
+                    formularArr={formularArr}
+                    setFormularArr={setFormularArr}
+                    descriptionArr={descriptionArr}
+                    setDescriptionArr={setDescriptionArr}
+                    dataTableArr={dataTableArr}
+                    setDataTableArr={setDataTableArr}
+                    dataUser={dataUser}
+                ></FormulaTable>
+            </div>
 
 
             <Container textAlign="center">

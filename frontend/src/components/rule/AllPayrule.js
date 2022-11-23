@@ -1,12 +1,20 @@
 import axios from 'axios';
 import _, { set } from 'lodash';
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Icon, Label, Menu, Table, Input, Button, Dropdown, Header, Container } from 'semantic-ui-react';
-import { __AllPayroll } from '../data/PayrollData';
+import { Tab, Icon, Popup, Label, Menu, Table, Input, Button, Dropdown, Header, Container } from 'semantic-ui-react';
+import { __AllPayroll } from '../../data/PayrollData';
 
-export default function AllPayroll() {
+
+export default function AllPayrule() {
+    const navigate = useNavigate()
     const [allRule, setAllRule] = useState([])
+    const [menu, setMenu] = useState('table')
+
+    const handleMenuClick = (e, { name }) => {
+        setMenu(name)
+    }
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,6 +38,26 @@ export default function AllPayroll() {
                 <Header.Subheader>Manage all rule</Header.Subheader>
             </Header.Content>
         </Header>
+
+        <Menu secondary>
+            <Menu.Item
+                name='table'
+                active={menu === 'table'}
+                onClick={handleMenuClick}
+            />
+            <Menu.Item
+                name='treeView'
+                active={menu === 'treeView'}
+                onClick={handleMenuClick}
+            />
+
+            <Menu.Menu position='right'>
+                <Button positive onClick={() => navigate('/payrule/new')}>
+                    <Icon name='add' />
+                    New Payrule
+                </Button>
+            </Menu.Menu>
+        </Menu>
 
 
         <Container fluid>
@@ -61,6 +89,11 @@ export default function AllPayroll() {
                                 <Table.Cell>999</Table.Cell>
                                 <Table.Cell>999</Table.Cell>
                                 <Table.Cell>
+                                    <Button
+                                        basic
+                                        icon='eye'
+                                        onClick={() => { }}
+                                    />
                                     <Button
                                         basic
                                         icon='edit'

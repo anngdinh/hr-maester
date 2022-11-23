@@ -29,29 +29,16 @@ const options = [
     { key: 'sign-out', text: 'Sign Out', icon: 'sign out' },
 ]
 
-export default function MyHeader() {
+export default function NavBar() {
 
 
     return (
         <Grid padded className="tablet computer only">
-            <Menu borderless fluid >
-                <Menu.Item header as="a">
-                    <Header as='h2'>
-                        {/* <Icon name='settings' /> */}
-                        <Image src='https://i.ibb.co/0GnsyBW/hr-maester2.png' size='massive' />
-                        <Header.Content>
-                            <BigTitle>
-                                HR MAESTER
-                            </BigTitle>
-
-                            {/* <Header.Subheader>Manage your preferences</Header.Subheader> */}
-                        </Header.Content>
-                    </Header>
+            <Menu secondary fluid >
+                <Menu.Item>
+                    <Input icon='search' placeholder='Search...' />
                 </Menu.Item>
                 <Menu.Menu position="right">
-                    <Menu.Item>
-                        <Input icon='search' placeholder='Search...' />
-                    </Menu.Item>
                     <Menu.Item as="a">Dashboard</Menu.Item>
                     <Menu.Item as="a">Settings</Menu.Item>
                     <Menu.Item as="a">Profile</Menu.Item>

@@ -1,121 +1,46 @@
 import React, { Component, useState } from "react";
-
+import { Route, Redirect, Routes } from "react-router-dom";
 import "semantic-ui-css/semantic.min.css";
+import { DefineRoutes } from "../routes";
+import { Button, Divider, Grid, Icon, Input, Image, Label, Menu, Table, Container } from "semantic-ui-react";
 
-import {
-  Button,
-  Divider,
-  Grid,
-  Icon,
-  Input,
-  Image,
-  Label,
-  Menu,
-  Table
-} from "semantic-ui-react";
+import AllPayrule from "../components/rule/AllPayrule";
+import NewPayrule from '../components/rule/NewPayrule'
+import SideBar from "../components/SideBar";
+import NavBar from "../components/NavBar";
+import AllPayroll from "../components/payroll/AllPayroll";
+import NewPayroll from "../components/payroll/NewPayroll";
 
-import MyHeader from "./components/MyHeader";
-import AllPayroll from "./payroll/AllPayroll";
-import GroupPayroll from "./payroll/GroupPayroll";
-import NewPayroll from './payroll/NewPayroll'
 
-export default function HomePage() {
-  const PageSw = {
-    dashboard: 'dashboard',
-    setting: 'setting',
-
-    newPayroll: 'newPayroll',
-    allPayroll: 'allPayroll',
-    groupPayroll: 'groupPayroll',
-
-    // aaaaaaaa: 'aaaaaaaa',
-    // aaaaaaaa: 'aaaaaaaa',
-    // aaaaaaaa: 'aaaaaaaa',
-    // aaaaaaaa: 'aaaaaaaa',
-  }
-
-  const [page, setPage] = useState(PageSw.newPayroll); // change default page here
-
-  const handleItemClick = (e, { name }) => setPage(name)
-
-  return (
+export default () => (
     <div className="App">
-      <MyHeader></MyHeader>
-
-      <Grid padded>
-        <Grid.Column
-          tablet={3}
-          computer={3}
-          only="tablet computer"
-        >
-          <Menu vertical borderless fluid text id="sidebar">
-            <Menu.Item>
-              <Menu.Header>GENERAL</Menu.Header>
-              <Menu.Menu>
-                <Menu.Item
-                >
-                  <Icon name={PageSw.dashboard} />
-                  Dashboard
-                </Menu.Item>
-                <Menu.Item
-                >
-                  <Icon name={PageSw.setting} />
-                  Setting
-                </Menu.Item>
-              </Menu.Menu>
-            </Menu.Item>
-            <Menu.Item>
-              <Menu.Header>PAYROLL</Menu.Header>
-              <Menu.Menu>
-                <Menu.Item
-                  name={PageSw.newPayroll}
-                  active={page === PageSw.newPayroll}
-                  onClick={handleItemClick}>
-                  <Icon name='file outline' />
-                  New Payroll
-                </Menu.Item>
-                <Menu.Item
-                  name={PageSw.allPayroll}
-                  active={page === PageSw.allPayroll}
-                  onClick={handleItemClick}>
-                  <Icon name='list' />
-                  All Payroll
-                </Menu.Item>
-
-                <Menu.Item
-                  name={PageSw.groupPayroll}
-                  active={page === PageSw.groupPayroll}
-                  onClick={handleItemClick}>
-                  <Icon name='tags' />
-                  Group rule
-                </Menu.Item>
-              </Menu.Menu>
-            </Menu.Item>
-          </Menu>
-        </Grid.Column>
+        <Grid padded='vertically'>
+            <Grid.Column style={{ backgroundColor: "#262b40" }}
+                tablet={3}
+                computer={3}
+                only="tablet computer"
+            >
+                <SideBar />
+            </Grid.Column>
 
 
-        <Grid.Column
-          mobile={16}
-          tablet={13}
-          computer={13}
-          floated="right"
-          id="content"
-        >
-          <div style={{ display: page === PageSw.newPayroll ? 'block' : 'none' }}>
-            <NewPayroll></NewPayroll>
-          </div>
+            <Grid.Column
+                mobile={16}
+                tablet={13}
+                computer={13}
+            // floated="right"
 
-          <div style={{ display: page === PageSw.allPayroll ? 'block' : 'none' }}>
-            <AllPayroll></AllPayroll>
-          </div>
-
-          <div style={{ display: page === PageSw.groupPayroll ? 'block' : 'none' }}>
-            <GroupPayroll></GroupPayroll>
-          </div>
-        </Grid.Column>
-      </Grid>
+            >
+                <NavBar></NavBar>
+                <div fluid id="content">
+                    <Routes>
+                        <Route path={DefineRoutes.payrule.path} element={<AllPayrule />} />
+                        <Route path={DefineRoutes.newPayrule.path} element={<NewPayrule />} />
+                        <Route path={DefineRoutes.payroll.path} element={<AllPayroll />} />
+                        <Route path={DefineRoutes.newPayroll.path} element={<NewPayroll />} />
+                    </Routes>
+                </div>
+            </Grid.Column>
+        </Grid>
     </div>
-  );
-
-};
+);
