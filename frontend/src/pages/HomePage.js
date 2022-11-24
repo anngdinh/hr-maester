@@ -10,6 +10,7 @@ import SideBar from "../components/SideBar";
 import NavBar from "../components/NavBar";
 import AllPayroll from "../components/payroll/AllPayroll";
 import NewPayroll from "../components/payroll/NewPayroll";
+import PayrollDetail from "../components/payroll/PayrollDetail";
 
 
 export default () => (
@@ -32,12 +33,13 @@ export default () => (
 
             >
                 <NavBar></NavBar>
-                <div fluid id="content">
+                <div id="content">
                     <Routes>
                         <Route path={DefineRoutes.payrule.path} element={<AllPayrule />} />
                         <Route path={DefineRoutes.newPayrule.path} element={<NewPayrule />} />
                         <Route path={DefineRoutes.payroll.path} element={<AllPayroll />} />
                         <Route path={DefineRoutes.newPayroll.path} element={<NewPayroll />} />
+                        <Route path={DefineRoutes.payrollDetail.path} element={<PayrollDetail />} />
                     </Routes>
                 </div>
             </Grid.Column>

@@ -9,12 +9,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      monthId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: "months",
-          key: "id"
-        }
+      month: {
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING

@@ -20,12 +20,9 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       type: DataTypes.INTEGER
     },
-    monthId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "months",
-        key: "id"
-      }
+    month: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING
