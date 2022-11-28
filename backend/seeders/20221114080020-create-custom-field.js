@@ -12,6 +12,14 @@ module.exports = {
         type: 'normal',
         value: 0,
       },
+      {
+        id: 2,
+        name: 'Position',
+        alias: 'position',
+        description: '',
+        type: 'normal',
+        value: 0,
+      },
     ], {});
 
     await queryInterface.bulkInsert('custom_field_values', [
@@ -25,6 +33,16 @@ module.exports = {
         employeeId: 2,
         value: 3,
       },
+      {
+        custom_field_id: 2,
+        employeeId: 1,
+        value: 3.1,
+      },
+      // {
+      //   custom_field_id: 2,
+      //   employeeId: 2,
+      //   value: 3,
+      // },
     ], {});
   },
 
