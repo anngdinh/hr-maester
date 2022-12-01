@@ -6,6 +6,7 @@ export const DefineRoutes = {
 
     payrule: { path: "/payrule" },
     newPayrule: { path: "/payrule/new" },
+    
     payroll: { path: "/payroll" },
     newPayroll: { path: "/payroll/new" },
     payrollDetail: { path: "/payroll/:id" },

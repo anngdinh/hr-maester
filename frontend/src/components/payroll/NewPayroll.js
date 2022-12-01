@@ -6,44 +6,16 @@ import _ from 'lodash';
 import { Icon, Input, Label, Menu, Table, Button, Header, Step, Container, Form, Dropdown, Segment, Accordion, Checkbox } from 'semantic-ui-react'
 import axios from "axios";
 import parseStruct from "../../utils/parseStruct";
+import InforPayrollComponent from "./InforPayrollComponent";
+import { DefineRoutes } from "../../routes";
+import { useNavigate } from 'react-router-dom';
 
 const randomKey = 'r';
 
-const RuleStructCheckbox = ({ ruleStruct, ruleCheckbox, setRuleCheckbox }) => {
-    if (!ruleStruct.id || !ruleCheckbox[randomKey + ruleStruct.id]) return <></>;
-
-    const id = ruleStruct.id;
-    const childrenId = ruleStruct.children?.map((e) => e.id);
-    const handleChecked = (data) => {
-        let _ruleCheckbox = _.cloneDeep(ruleCheckbox);
-        _ruleCheckbox[randomKey + id].value = data;
-        setRuleCheckbox(_ruleCheckbox)
-    }
-
-    return (<>
-        <Checkbox
-            label={ruleStruct.id + "    " + ruleStruct.name + ' - ' + childrenId.toString()}
-            disabled={ruleCheckbox[randomKey + id].disable}
-            onChange={(e, data) => handleChecked(data.checked)}
-            checked={ruleCheckbox[randomKey + id].value}
-        />
-        <div style={{ marginLeft: '10px', paddingLeft: '10px', borderLeft: '1px solid black' }}>
-            {ruleStruct.children?.map((e, index) => {
-                return <RuleStructCheckbox key={index}
-                    ruleStruct={e}
-                    ruleCheckbox={ruleCheckbox}
-                    setRuleCheckbox={setRuleCheckbox}
-                ></RuleStructCheckbox>
-            })
-            }
-        </div>
-    </>)
-
-}
-
 
 export default function NewPayroll() {
-    const [allRule, setAllRule] = useState([])
+    const navigate = useNavigate()
+    
     const [ruleCheckbox, setRuleCheckbox] = useState({})  //{1:{value:true, disable:false}}
     const [ruleStruct, setRuleStruct] = useState({})
 
@@ -54,7 +26,6 @@ export default function NewPayroll() {
             try {
                 {
                     const { data: response } = await axios.get(process.env.REACT_APP_BACKEND + '/api/payroll/rule/read');
-                    setAllRule(response)
                     let x = parseStruct(response)
                     // console.log({x})
                     setRuleStruct(x)
@@ -76,10 +47,32 @@ export default function NewPayroll() {
         fetchData();
     }, [])
 
-    const onChangeNewInfor = (e) => {
-        let _newVar = _.cloneDeep(newDataInfor);
-        _newVar[e.target.name] = e.target.value;
-        setNewDataInfor(_newVar);
+    const handleCreateNew = async () => {
+        const data = {
+            name: newDataInfor.name,
+            month: newDataInfor.month,
+            year: newDataInfor.year,
+            rule: ruleCheckboxToArr()
+        }
+        // console.log({ data })
+        await axios.post(process.env.REACT_APP_BACKEND + '/api/payroll/payroll/create', data)
+            .then(response => {
+                console.log({ response })
+            })
+            .catch(error => {
+                console.error('There was an error!', error);
+            });
+        navigate(DefineRoutes.payroll.path)
+    }
+
+    const ruleCheckboxToArr = () => {
+        var result = Object.keys(ruleCheckbox).reduce(function (result, rule) {
+            // console.log({ rule })
+            if (ruleCheckbox[rule].value)
+                result.push(parseInt(rule.slice(randomKey.length)));
+            return result;
+        }, []);
+        return result
     }
 
     return (
@@ -91,38 +84,20 @@ export default function NewPayroll() {
                 </Header.Content>
             </Header>
 
-            <Container>
-                <Form>
-                    <Form.Group widths='equal'>
-                        <Form.Field>
-                            <label>Name</label>
-                            <Input value={newDataInfor['name']} placeholder='Name...' name='name' onChange={onChangeNewInfor} />
-                        </Form.Field>
-                    </Form.Group>
-
-                    <Form.Group widths='equal'>
-                        <Form.Field>
-                            <label>Month</label>
-                            <Input type="number" min="1" max="12" value={newDataInfor['month']} name='month' onChange={onChangeNewInfor} />
-                        </Form.Field>
-                        <Form.Field>
-                            <label>Year</label>
-                            <Input value={newDataInfor.year} disabled />
-                        </Form.Field>
-                    </Form.Group>
-                </Form>
-            </Container>
-
-            <RuleStructCheckbox
-                ruleStruct={ruleStruct}
+            <InforPayrollComponent
+                editMode={true}
+                newDataInfor={newDataInfor}
+                setNewDataInfor={setNewDataInfor}
                 ruleCheckbox={ruleCheckbox}
                 setRuleCheckbox={setRuleCheckbox}
-            ></RuleStructCheckbox>
+                ruleStruct={ruleStruct}
+                setRuleStruct={setRuleStruct}
+            ></InforPayrollComponent>
 
             <Button color='red' onClick={() => { }}>
                 <Icon name='remove' /> Cancel
             </Button>
-            <Button color='green' onClick={() => { }}>
+            <Button color='green' onClick={() => handleCreateNew()}>
                 <Icon name='checkmark' /> Create
             </Button>
         </>

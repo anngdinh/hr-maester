@@ -3,7 +3,8 @@ const export_payroll_monthly_rule = require('../models').export_payroll_monthly_
 const export_payroll_monthly_preview = require('../models').export_payroll_monthly_preview;
 const export_payroll_monthly_final = require('../models').export_payroll_monthly_final;
 
-
+const calPayrollId = require('../middleware/ruleCalculator')
+const dataGridPayroll = require('../middleware/dataGridPayroll')
 const PayrollController = {
     create: async (request, response) => {
         try {
@@ -35,6 +36,7 @@ const PayrollController = {
             const _rule = allRule.map((e) => e.dataValues.salary_rule_id)
             payroll.dataValues.rule = _rule
             // console.log({allRule})
+            await calPayrollId(payroll.id)
             await response.send(payroll);
         } catch (err) {
             response.status(400).send(err);
@@ -47,6 +49,20 @@ const PayrollController = {
             const payroll = await export_payroll_monthly.findAll();
             const allRule = await export_payroll_monthly_rule.findAll()
             await response.send({ payroll, allRule });
+        } catch (err) {
+            response.status(400).send(err);
+        }
+    },
+    readSingle: async (request, response) => {
+        try {
+            // request.body = { id }
+            console.log(request.params)
+            const id = request.params.payrollId
+            console.log({ id })
+            const payroll = await export_payroll_monthly.findAll({ where: { id: id, }, });
+
+            const [rules, rows, columns] = await dataGridPayroll(id)
+            await response.send({ payroll, rules, rows, columns });
         } catch (err) {
             response.status(400).send(err);
         }

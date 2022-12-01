@@ -1,5 +1,5 @@
 import axios from 'axios';
-import _, { set } from 'lodash';
+import _ from 'lodash';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -47,7 +47,7 @@ export default function AllPayroll() {
         </Header>
 
         <Menu secondary>
-            <Menu.Item
+            {/* <Menu.Item
                 name='table'
                 active={menu === 'table'}
                 onClick={handleMenuClick}
@@ -56,12 +56,12 @@ export default function AllPayroll() {
                 name='treeView'
                 active={menu === 'treeView'}
                 onClick={handleMenuClick}
-            />
+            /> */}
 
             <Menu.Menu position='right'>
                 <Button positive onClick={() => navigate(DefineRoutes.newPayroll.path)}>
                     <Icon name='add' />
-                    New Payrule
+                    New Payroll
                 </Button>
             </Menu.Menu>
         </Menu>
@@ -75,6 +75,8 @@ export default function AllPayroll() {
                         <Table.HeaderCell>ID</Table.HeaderCell>
                         <Table.HeaderCell>Name</Table.HeaderCell>
                         <Table.HeaderCell>Month</Table.HeaderCell>
+                        {/* <Table.HeaderCell>Create</Table.HeaderCell> */}
+                        {/* .......................... */}
                         <Table.HeaderCell>Status</Table.HeaderCell>
                         <Table.HeaderCell>Action</Table.HeaderCell>
                     </Table.Row>
@@ -90,6 +92,11 @@ export default function AllPayroll() {
                                 <Table.Cell>{e.month}</Table.Cell>
                                 <Table.Cell>{e.canModify == true ? "preview" : "finish"}</Table.Cell>
                                 <Table.Cell>
+                                    <Button
+                                        basic
+                                        icon='eye'
+                                        onClick={() => navigate(DefineRoutes.payrollDetail.path.replace(':id', e.id))}
+                                    />
                                     <Button
                                         basic
                                         icon='edit'

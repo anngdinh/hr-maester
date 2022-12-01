@@ -16,5 +16,6 @@ router.get('/payroll/read', PayrollController.read);
 router.post('/payroll/create', PayrollController.create);
 router.post('/payroll/update', PayrollController.update);
 router.post('/payroll/delete', PayrollController.delete);
+router.get('/payroll/readSingle/:payrollId', PayrollController.readSingle);
 
 module.exports = router;
