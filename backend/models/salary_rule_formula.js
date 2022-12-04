@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     column_id: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
     },

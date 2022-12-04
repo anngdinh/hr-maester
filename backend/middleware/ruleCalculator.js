@@ -5,19 +5,26 @@ const export_payroll_monthly_final = require('../models').export_payroll_monthly
 const Employee = require('../models').Employee;
 const custom_field = require('../models').custom_field;
 const custom_field_value = require('../models').custom_field_value;
+const variable = require('../models').variable;
+const salary_rule = require('../models').salary_rule;
+const salary_rule_formula = require('../models').salary_rule_formula;
 
 const HyperFormula = require('hyperformula');
+const { Op } = require("sequelize");
 
 const indexHolder = '_indexHolder_'
 
 const prefixRule = 'rule.'
 const prefixVar = 'var.'
 const prefixField = 'field.'
+const prefixTable = 'table.'
 
-const tableVarName = "tableVar"
-const tableFieldName = "tableField"
+// const tableVarName = "tableVar"
+const sheetFieldName = "sheetField" // custom_field = (normal, month) + rule
+const sheetFieldRuleName = "sheetFieldRule"
+const sheetRuleCalName = "sheetRuleCal"
+// const tableTableName = "tableTable"
 
-// define the options
 
 const allRule =
     [
@@ -25,33 +32,32 @@ const allRule =
             "id": 1,
             "alias": 'one',
             "isBasicFormula": true,
-            "formula": "rule.two + rule.three * 2",
+            "formula": "rule.three + rule.two + field.field_in_rule + field.field_in_rule + field.coefficient_salary",
             "groupBelongId": null,
+            // var : tax1=2, tax2=3
+            // field: field_in_rule:  5 | 10
         },
         {
             "id": 2,
             "alias": 'two',
             "isBasicFormula": true,
-            "formula": "field.position * 100",
+            "formula": "2 * var.tax1 * var.tax2",
             "groupBelongId": 1,
+            // var : tax1=4, tax2=5
         },
         {
             "id": 3,
             "alias": 'three',
-            "isBasicFormula": true,
-            "formula": "rule.two + field.coefficient_salary * 100",
+            "isBasicFormula": false,
+            "formula": "3",
             "groupBelongId": 1,
+            // fomula: 200 | table.A + 100
         },
     ]
-
-
-const customTable = "customTable"
-const salary_rule = require('../models').salary_rule;
-
-
+// coefficient_salary:   normal      2|3
+// position          :   normal     10|
+// working_day       :   monthly    20|30
 async function calPayrollId(id) {
-    const hfInstance = HyperFormula.HyperFormula.buildEmpty({ licenseKey: 'gpl-v3' });
-    const ruleResultID = hfInstance.getSheetId(hfInstance.addSheet("RuleResultTable"));
 
     const rootRuleID = 1;
 
@@ -60,9 +66,9 @@ async function calPayrollId(id) {
 
     // console.log({ payroll }) // id and month
 
-    const _ruleInfo = await salary_rule.findAll();
-    const ruleInfo = _ruleInfo.map((e) => e.toJSON())
-    // const ruleInfo = allRule;
+    // const _ruleInfo = await salary_rule.findAll();
+    // const ruleInfo = _ruleInfo.map((e) => e.toJSON())
+    const ruleInfo = allRule;
 
     const _arrRuleChoose = await export_payroll_monthly_rule.findAll({ where: { export_payroll_monthly_id: payroll.id } })
     const arrRuleChoose = _arrRuleChoose.map((e) => e.toJSON().salary_rule_id)
@@ -73,9 +79,15 @@ async function calPayrollId(id) {
     // console.log({ employeeID })
     // console.log({ employeeID })
 
-    const [custom_field_alias, custom_field_table] = await getCustomField(employeeID, '202206')
-
-    hfInstance.setSheetContent(hfInstance.getSheetId(hfInstance.addSheet(tableFieldName)), custom_field_table);
+    const [custom_field_alias, custom_field_table] = await getCustomField(employeeID, {
+        [Op.or]: [
+            { type: 'normal' },
+            {
+                type: 'monthly',
+                value: '202212'
+            }
+        ]
+    })
 
     let arrRuleResult = new Array(arrRuleChoose.length).fill(0);
     const data = {
@@ -86,16 +98,14 @@ async function calPayrollId(id) {
         custom_field_alias: custom_field_alias,
         custom_field_table: custom_field_table,
         employeeID: employeeID,
-        hfInstance: hfInstance,
-        ruleResultID: ruleResultID
     }
 
     // console.log({ data })
 
     let result = await calRule(rootRuleID, data)
     console.log({ result })
-    console.log(data.arrRuleResult)
-    await writeToDatabase(data)
+    // console.log(data.arrRuleResult)
+    // await writeToDatabase(data)
 }
 
 async function writeToDatabase(data) {
@@ -126,35 +136,95 @@ async function writeToDatabase(data) {
     }
 }
 async function calRule(ruleID, data) {
-    console.log("huhuhuh")
-    // ............................. get variable table and ...
+    // ............................. get variable and ...
+    const _varTable = await variable.findAll({ where: { rule_id: ruleID } })
+    const varTable = _varTable.map((e) => e.toJSON())
+    const varAlias = varTable.map((e) => e.alias)
+    const varValue = varTable.map((e) => e.value)
+    // console.log({ varAlias, varValue })
+
+    // get field in rule because it's local for rule, can't merge with normal and monthly
+    const [custom_field_rule_alias, custom_field_rule_table] = await getCustomField(data.employeeID, { type: 'salary', value: 1 })
+    console.log({ custom_field_rule_alias, custom_field_rule_table })
+
+    const hfInstance = HyperFormula.HyperFormula.buildEmpty({ licenseKey: 'gpl-v3' });
+    hfInstance.setSheetContent(hfInstance.getSheetId(hfInstance.addSheet(sheetFieldRuleName)), custom_field_rule_table);
+    hfInstance.setSheetContent(hfInstance.getSheetId(hfInstance.addSheet(sheetFieldName)), data.custom_field_table);
+
+    const ruleResultID = hfInstance.getSheetId(hfInstance.addSheet(sheetRuleCalName));
     const rule = data.ruleInfo.find((e) => e.id == ruleID)
     // console.log({ rule })
 
+    let dataLocal = {}
+    dataLocal.varAlias = varAlias
+    // dataLocal.varTable = varTable
+    dataLocal.varValue = varValue
+    dataLocal.custom_field_rule_alias = custom_field_rule_alias
+    dataLocal.ruleID = ruleID
+    dataLocal.ruleResultID = ruleResultID
+    // dataLocal.custom_field_rule_table = custom_field_rule_table
+    dataLocal.hfInstance = hfInstance
+
     if (rule.isBasicFormula) {
-        const formulaSplit = splitFomula(rule.formula)
-        // console.log(formulaSplit)
+        const result = await calFormula([rule.formula], dataLocal, data)
+        return result[0]
+    }
+    else {
+        const _formula = await salary_rule_formula.findAll(
+            {
+                where: { salary_rule_id: ruleID },
+                order: [["column_id", "ASC"]] // ASC, DESC, NULLS FIRST
+            })
+        const formularArr = _formula.map((e) => e.toJSON().value)
+        console.log({ formularArr })
+
+        const result = await calFormula(formularArr, dataLocal, data)
+        return result[result.length - 1]
+    }
+}
+
+async function calFormula(formula, dataLocal, data) { // ["", ""]
+    let hfInstance = dataLocal.hfInstance
+    // var formularExtract = formula.map(e => ExpParser(e))
+    let tableResult = []
+    for (let i = 0; i < formula.length; i++) {
+        const formulaSplit = splitFomula(formula[i])
         let formulaParser = formulaSplit;
 
-        let tableResult = []
+        let columnResult = []
 
-        // field and var
+        // field and var and table
         for (let index = 0; index < formulaSplit.length; index++) {
             if (formulaSplit[index].startsWith(prefixField)) {
                 const alias = formulaSplit[index].slice(prefixField.length)
 
-                const aliasIndex = data.custom_field_alias.indexOf(alias)
-                const charIndex = IntToABCD(aliasIndex)
-
-                formulaParser[index] = `${tableFieldName}!${charIndex}${indexHolder}`
+                // in custom_field_alias       or      custom_field_rule_alias
+                if (dataLocal.custom_field_rule_alias.indexOf(alias) != -1) {
+                    const aliasIndex = dataLocal.custom_field_rule_alias.indexOf(alias)
+                    const charIndex = IntToABCD(aliasIndex)
+                    formulaParser[index] = `${sheetFieldRuleName}!${charIndex}${indexHolder}`
+                    // formulaParser[index] = "0"
+                }
+                else {
+                    const aliasIndex = data.custom_field_alias.indexOf(alias)
+                    const charIndex = IntToABCD(aliasIndex)
+                    formulaParser[index] = `${sheetFieldName}!${charIndex}${indexHolder}`
+                }
             }
-            else if (formulaSplit[index].startsWith(prefixVar)) { }
+            else if (formulaSplit[index].startsWith(prefixVar)) {
+                const alias = formulaSplit[index].slice(prefixVar.length)
+                const aliasIndex = dataLocal.varAlias.indexOf(alias)
+                formulaParser[index] = dataLocal.varValue[aliasIndex]
+            }
+            else if (formulaSplit[index].startsWith(prefixTable)) {
+                const alias = formulaSplit[index].slice(prefixTable.length)
+                formulaParser[index] = `${sheetRuleCalName}!${alias}${indexHolder}`
+                // formulaParser[index] = `sheetRuleCal!A1`
+            }
         }
 
-        // console.log({ formulaParser })
-
-        tableResult = new Array(data.employeeID.length).fill(0);
-        tableResult.forEach((_, ind) => tableResult[ind] = clone(formulaParser));
+        columnResult = new Array(data.employeeID.length).fill(0);
+        columnResult.forEach((_, ind) => columnResult[ind] = clone(formulaParser));
 
         // rule
         for (let index = 0; index < formulaSplit.length; index++) {
@@ -169,41 +239,47 @@ async function calRule(ruleID, data) {
                     valueReplace = await calRule(id, data);
                 }
 
+                console.log({ valueReplace })
+
                 // replace valueReplace
-                valueReplace.forEach((e, i) => tableResult[i][index] = e.toString())
+                valueReplace.forEach((e, i) => columnResult[i][index] = e.toString())
             }
         }
 
-        // console.log({ tableResult })
+        // console.log({ columnResult })
 
-        // concat tableResult
-        tableResult = tableResult.map((e, index) => {
+        // concat columnResult
+        columnResult = columnResult.map((e, index) => {
             let str = e.join('')
             str = str.replaceAll(indexHolder, index + 1)
             return "= " + str
         })
-        // console.log({ tableResult })
+        // console.log({ columnResult })
 
-        data.hfInstance.setSheetContent(data.ruleResultID, [tableResult]);
-        const sheetValue = data.hfInstance.getSheetValues(data.ruleResultID)
 
-        data.arrRuleResult[data.arrRuleChoose.indexOf(ruleID)] = sheetValue[0]
-        return sheetValue[0]
+        tableResult = tableResult.concat([columnResult])
     }
 
-    let formulaParser = [rule.formula, rule.formula]
-    // console.log(formulaParser)
+    console.log({ tableResult })
+    console.log(transposeArr(tableResult))
 
-    return HyperFormulaCal(formulaParser);
+    hfInstance.setSheetContent(dataLocal.ruleResultID, transposeArr(tableResult));
+    const sheetValue = hfInstance.getSheetValues(dataLocal.ruleResultID)
+    console.log({ sheetValue })
+
+    // data.arrRuleResult[data.arrRuleChoose.indexOf(dataLocal.ruleID)] = sheetValue[sheetValue.length - 1]
+    // return sheetValue[0]
+    // return sheetValue;
+    return transposeArr(sheetValue);
 }
+
 function splitFomula(formula) {
     return formula.split(' ');
 }
-async function getCustomField(employeeID, month) {
+
+async function getCustomField(employeeID, options) {
     const _custom_field = await custom_field.findAll({
-        where: {
-            type: 'normal' // get monthly too ...................
-        },
+        where: options,
         attributes: ['id', 'alias']
     })
     const custom_field_id = _custom_field.map((e) => e.toJSON().id)
@@ -222,7 +298,6 @@ async function getCustomField(employeeID, month) {
             const ind = employeeID.findIndex((e) => e == element.employeeId)
             custom_value[ind] = element.value //......................
         });
-
         // console.log({ custom_value })
 
         custom_field_table = custom_field_table.concat([custom_value]);
@@ -235,6 +310,7 @@ async function getCustomField(employeeID, month) {
 
     return [custom_field_alias, transposeArr(custom_field_table)]
 }
+
 
 function transposeArr(arr) {
     let output = arr[0].map((_, colIndex) => arr.map(row => row[colIndex]));
@@ -249,5 +325,11 @@ const IntToABCD = (i) => {
 const clone = (arr) => arr.map((e) => e)
 
 
+const pattern = /[_A-Za-z^]+\.[_A-Za-z^]+/g;
+function ExpParser(exp) {
+    let result = exp.match(pattern);
+    // console.log(result);
+    return result;
+}
 
 module.exports = calPayrollId;

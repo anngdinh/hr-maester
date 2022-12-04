@@ -13,7 +13,7 @@ module.exports = {
         }
       },
       column_id: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: false,
         primaryKey: true,
       },

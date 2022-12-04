@@ -9,7 +9,7 @@ module.exports = {
         name: 'Coefficient Salary',
         alias: 'coefficient_salary',
         description: '',
-        type: 'normal',
+        type: 'normal', // normal, monthly, salary =>   ..., month, ruleID
         value: 0,
       },
       {
@@ -19,6 +19,24 @@ module.exports = {
         description: '',
         type: 'normal',
         value: 0,
+      },
+
+      {
+        id: 3,
+        name: 'Field in rule',
+        alias: 'field_in_rule',
+        description: '',
+        type: 'salary',
+        value: 1,
+      },
+
+      {
+        id: 4,
+        name: 'Working day',
+        alias: 'working_day',
+        description: '',
+        type: 'monthly',
+        value: '202212',
       },
     ], {});
 
@@ -36,13 +54,30 @@ module.exports = {
       {
         custom_field_id: 2,
         employeeId: 1,
-        value: 3.1,
+        value: 10,
       },
-      // {
-      //   custom_field_id: 2,
-      //   employeeId: 2,
-      //   value: 3,
-      // },
+
+      {
+        custom_field_id: 3,
+        employeeId: 1,
+        value: 5,
+      },
+      {
+        custom_field_id: 3,
+        employeeId: 2,
+        value: 10,
+      },
+
+      {
+        custom_field_id: 4,
+        employeeId: 1,
+        value: 20,
+      },
+      {
+        custom_field_id: 4,
+        employeeId: 2,
+        value: 30,
+      },
     ], {});
   },
 

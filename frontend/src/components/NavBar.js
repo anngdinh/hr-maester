@@ -44,7 +44,7 @@ export default function NavBar() {
                     <Menu.Item as="a">Profile</Menu.Item>
                     <Menu.Item as="a">
                         <span>
-                            <Icon name='mail' />
+                            <Icon name='bell' size="large"/>
                             <Label color='red' floating>
                                 22
                             </Label>
