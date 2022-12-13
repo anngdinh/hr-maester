@@ -37,7 +37,7 @@ router.post('/register', async (request, response) => {
 
 router.post('/login', async (request, response) => {
     const user = await User.findOne({ where: { email: request.body.email } });
-    
+
     console.log(user)
 
     if (!user) return response.status(422).send({ message: 'Email or Password is not correct' });
